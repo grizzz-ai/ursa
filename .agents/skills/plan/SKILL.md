@@ -45,7 +45,7 @@ risks, verification, and recovery understandable to an independent reviewer.
 - `READY`: a complete `plan.md` plus its revision/hash for a distinct plan auditor. No implementation
   permission is implied by producing a plan.
 - `BLOCK`: a saved plan identifying each unresolved fact or decision, its owner, and the exact execution
-  gate. Audit and implementation stop until the planner writes a new revision.
+  gate. Recipient: operator. Audit and implementation stop until the planner writes a new revision.
 
 ## Stop conditions
 
