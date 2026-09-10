@@ -4,13 +4,12 @@ A vendor-neutral engineering workflow designed for use with Codex and Claude Cod
 
 ## Status
 
-This repository is an incomplete scaffold. It contains the repository layout, license, and
-repository-local installation contract. The six workflow skills and the worked example are planned
-follow-up work and are not present yet.
+The six workflow skills are present as a private publication candidate. The worked example,
+clean-room publication review, and public launch remain follow-up work.
 
-## Planned workflow
+## Workflow
 
-The planned workflow uses six skills in sequence:
+The workflow uses six skills in sequence:
 
 1. `discovery`
 2. `plan`
@@ -19,9 +18,13 @@ The planned workflow uses six skills in sequence:
 5. `code-audit`
 6. `handoff`
 
-Each skill will have one canonical body under `.agents/skills/<name>/SKILL.md`. Claude Code uses a
+Each skill has one canonical body under `.agents/skills/<name>/SKILL.md`. Claude Code uses a
 relative link under `.claude/skills/<name>` in the consuming repository, so both runtimes discover
 the same physical file.
+
+Each task keeps durable evidence under `.ai-workflow/<task-key>/`. Producer artifacts use revisions
+and hashes; plan and code audits are append-only independent gates. The handoff records whether those
+artifacts are tracked, local, or pending and stops before merge.
 
 ## Repository layout
 
@@ -44,8 +47,8 @@ See [Installation](docs/installation.md) for the repository-local adapter recipe
 
 ## Limitations
 
-- No production workflow skill exists in this scaffold.
-- No end-to-end workflow or worked example is claimed.
+- No end-to-end worked example or public-launch readiness is claimed.
+- Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
 - The compatibility evidence currently targets macOS with the runtime versions listed above.
 - Windows compatibility has not been verified.
 
