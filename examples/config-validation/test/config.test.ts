@@ -11,16 +11,40 @@ test("accepts a valid configuration", () => {
   assert.deepEqual(actual, input);
 });
 
-test("shows malformed configuration silently receives defaults", () => {
+test("rejects a non-object configuration", () => {
   const input = null;
 
-  const actual = parseConfig(input);
+  const act = () => parseConfig(input);
 
-  assert.deepEqual(actual, { mode: "safe", retryLimit: 3 });
+  assert.throws(act, /^TypeError: Invalid configuration:/);
 });
 
-test("rejects malformed configuration", () => {
-  const input = null;
+test("rejects a configuration with a missing field", () => {
+  const input = { mode: "safe" };
+
+  const act = () => parseConfig(input);
+
+  assert.throws(act, /^TypeError: Invalid configuration:/);
+});
+
+test("rejects an unsupported mode", () => {
+  const input = { mode: "turbo", retryLimit: 3 };
+
+  const act = () => parseConfig(input);
+
+  assert.throws(act, /^TypeError: Invalid configuration:/);
+});
+
+test("rejects a fractional retry limit", () => {
+  const input = { mode: "safe", retryLimit: 1.5 };
+
+  const act = () => parseConfig(input);
+
+  assert.throws(act, /^TypeError: Invalid configuration:/);
+});
+
+test("rejects a negative retry limit", () => {
+  const input = { mode: "safe", retryLimit: -1 };
 
   const act = () => parseConfig(input);
 

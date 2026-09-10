@@ -3,11 +3,6 @@ export type AppConfig = {
   retryLimit: number;
 };
 
-const DEFAULT_CONFIG: AppConfig = {
-  mode: "safe",
-  retryLimit: 3,
-};
-
 function isAppConfig(value: unknown): value is AppConfig {
   if (typeof value !== "object" || value === null) {
     return false;
@@ -21,7 +16,9 @@ function isAppConfig(value: unknown): value is AppConfig {
 
 export function parseConfig(value: unknown): AppConfig {
   if (!isAppConfig(value)) {
-    return { ...DEFAULT_CONFIG };
+    throw new TypeError(
+      "Invalid configuration: expected mode safe|fast and retryLimit as a non-negative integer",
+    );
   }
 
   return value;
