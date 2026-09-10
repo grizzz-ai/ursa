@@ -1,0 +1,11 @@
+{
+  "name": "ai-engineering-workflow-example",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "test": "node --test examples/config-validation/test/config.test.ts"
+  }
+}

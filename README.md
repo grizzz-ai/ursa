@@ -4,8 +4,8 @@ A vendor-neutral engineering workflow designed for use with Codex and Claude Cod
 
 ## Status
 
-The six workflow skills are present as a private publication candidate. The worked example,
-clean-room publication review, and public launch remain follow-up work.
+The six workflow skills and one worked example are present as a private publication candidate.
+Clean-room publication review and public launch remain follow-up work.
 
 ## Workflow
 
@@ -26,11 +26,15 @@ Each task keeps durable evidence under `.ai-workflow/<task-key>/`. Producer arti
 and hashes; plan and code audits are append-only independent gates. The handoff records whether those
 artifacts are tracked, local, or pending and stops before merge.
 
+See the [Fail-Closed Configuration Example](examples/config-validation/README.md) for a synthetic
+TypeScript change carried through this file-based workflow.
+
 ## Repository layout
 
 ```text
 .agents/skills/       Canonical skill source
 docs/installation.md  Install, update, validate, and remove recipes
+examples/              Synthetic worked examples
 LICENSE               Apache License 2.0
 NOTICE                Copyright notice
 ```
@@ -47,7 +51,7 @@ See [Installation](docs/installation.md) for the repository-local adapter recipe
 
 ## Limitations
 
-- No end-to-end worked example or public-launch readiness is claimed.
+- The worked example demonstrates a narrow repository-local correction, not production readiness.
 - Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
 - The compatibility evidence currently targets macOS with the runtime versions listed above.
 - Windows compatibility has not been verified.
