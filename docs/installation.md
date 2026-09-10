@@ -12,11 +12,11 @@ gh auth status
 gh auth setup-git
 ```
 
-Set a full source commit, a skill name, and the consuming repository. `WORKFLOW_SOURCE` may be a
-local clone during verification; its default is the canonical GitHub repository.
+Set a source repository, a full source commit, a skill name, and the consuming repository.
+`WORKFLOW_SOURCE` may be a local clone during verification.
 
 ```sh
-WORKFLOW_SOURCE=${WORKFLOW_SOURCE:-https://github.com/grizzz-ai/ai-engineering-workflow.git}
+WORKFLOW_SOURCE=${WORKFLOW_SOURCE:?set the source repository path or URL}
 WORKFLOW_REF=${WORKFLOW_REF:?set a full source commit}
 SKILL_NAME=${SKILL_NAME:?set a skill directory name}
 TARGET_REPO=${TARGET_REPO:-$(git rev-parse --show-toplevel)}
