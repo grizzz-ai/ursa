@@ -1,7 +1,50 @@
 # Repository-local installation
 
-These recipes install one skill into a user-owned Git repository. They never write to global Codex
-or Claude Code configuration.
+The repository-root installer adds the complete six-skill workflow to one user-owned Git repository.
+It never writes to global Codex or Claude Code configuration.
+
+## Install all six skills
+
+Clone the workflow once outside your consuming repositories, using the repository URL in the
+[README quickstart](../README.md#quickstart). The examples below assume that clone is stored at
+`$HOME/.local/share/ai-engineering-workflow`.
+
+From the Git repository currently open in VS Code, run:
+
+```sh
+"$HOME/.local/share/ai-engineering-workflow/install.sh"
+```
+
+The no-argument form resolves the current Git root. To select a repository from another directory, use:
+
+```sh
+"$HOME/.local/share/ai-engineering-workflow/install.sh" --target /path/to/project
+```
+
+The fixed manifest installs `discovery`, `plan`, `plan-audit`, `implement`, `code-audit`, and `handoff`.
+Each canonical body is copied to `.agents/skills/<name>/SKILL.md`; each
+`.claude/skills/<name>` entry is a relative link to that canonical repository-local directory. The
+source-only `.agents/skills/README.md` is deliberately not copied into consuming repositories.
+
+Each installed directory also contains `.ai-engineering-workflow-origin`, recording the exact source
+commit and Git blob hash. Validate all files, records, and links without changing anything:
+
+```sh
+"$HOME/.local/share/ai-engineering-workflow/install.sh" --check
+```
+
+The installer refuses a non-Git target, a changed workflow source, an occupied or partial destination,
+and its own source checkout as a target. It checks every destination before writing. If a later write
+fails, it removes only paths created by that invocation.
+
+Existing `AGENTS.md`, `CLAUDE.md`, unrelated skills, project files, hooks, and Git configuration remain
+user-owned and unchanged. GitHub authentication controls repository access only; authenticate Codex and
+Claude Code separately through their own supported sign-in flows.
+
+## Advanced per-skill lifecycle
+
+The recipes below install, validate, update, or remove one named skill. Use them when you deliberately
+need per-skill lifecycle control; V1 does not provide bulk update or removal modes.
 
 ## Prerequisites
 

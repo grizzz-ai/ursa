@@ -42,12 +42,55 @@ NOTICE                Copyright notice
 ## Requirements
 
 - Git
-- GitHub CLI (`gh`) authenticated for private-repository access
+- GitHub access to clone this repository while it remains private
 - A user-owned Git repository where the skills will be installed
 - Codex `0.153.4`, the compatibility-tested version
 - Claude Code `2.1.2`, the pinned version whose local-menu verification is still pending
 
-See [Installation](docs/installation.md) for the repository-local adapter recipes.
+## Quickstart
+
+Clone the workflow once, outside the repositories where you write code:
+
+```sh
+mkdir -p "$HOME/.local/share"
+cd "$HOME/.local/share"
+git clone https://github.com/grizzz-ai/ai-engineering-workflow.git
+```
+
+Open an existing Git repository in VS Code, use its integrated terminal, and install the workflow into
+the repository you opened:
+
+```sh
+cd /path/to/your-project
+"$HOME/.local/share/ai-engineering-workflow/install.sh"
+```
+
+You can instead select another repository explicitly:
+
+```sh
+"$HOME/.local/share/ai-engineering-workflow/install.sh" --target /path/to/your-project
+```
+
+The installer copies all six canonical skill files into the selected repository, creates local Claude
+Code links to those copies, records their source commit and blob hashes, and validates the result. It
+does not change project code, `AGENTS.md`, `CLAUDE.md`, Git configuration, or global agent settings.
+
+GitHub, Codex, and Claude Code authenticate separately. GitHub authentication only grants access to
+clone repositories. Sign in to Codex and Claude Code through each product's own supported sign-in flow;
+the installer never reads or stores model credentials.
+
+After signing in, open the target repository in VS Code and start with:
+
+> Use the discovery skill to inspect this repository and identify the best next engineering task.
+
+Run the read-only check at any time from the target repository:
+
+```sh
+"$HOME/.local/share/ai-engineering-workflow/install.sh" --check
+```
+
+See [Installation](docs/installation.md) for the installed layout, validation behavior, and guarded
+per-skill update and removal recipes.
 
 ## Limitations
 
