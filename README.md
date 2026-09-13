@@ -2,9 +2,12 @@
 
 A vendor-neutral engineering workflow designed for use with Codex and Claude Code.
 
+Developed by [Grizzz AI](https://github.com/grizzz-ai).
+
 ## Status
 
 The six workflow skills and one worked example are present as a private publication candidate.
+Repository-local discovery has been verified with Codex `0.153.4` and Claude Code `2.1.2`, where skills appear as direct commands.
 Clean-room publication review and public launch remain follow-up work.
 
 ## Workflow
@@ -45,7 +48,7 @@ NOTICE                Copyright notice
 - GitHub access to clone this repository while it remains private
 - A user-owned Git repository where the skills will be installed
 - Codex `0.153.4`, the compatibility-tested version
-- Claude Code `2.1.2`, the pinned version whose local-menu verification is still pending
+- Claude Code `2.1.2`, the compatibility-tested version
 
 ## Quickstart
 
@@ -98,6 +101,10 @@ per-skill update and removal recipes.
 - Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
 - The compatibility evidence currently targets macOS with the runtime versions listed above.
 - Windows compatibility has not been verified.
+
+## Support
+
+Use [GitHub Issues](https://github.com/grizzz-ai/ai-engineering-workflow/issues) for installation problems, documentation errors, and reproducible compatibility reports.
 
 ## License
 
