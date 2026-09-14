@@ -79,7 +79,7 @@ Run the prerequisite blocks above, then run this block unchanged:
 
 ```sh
 set -eu
-source_checkout=$(mktemp -d)
+source_checkout=$(mktemp -d "${TMPDIR:-/tmp}/workflow-source.XXXXXXXXXX")
 cleanup_source() { rm -R "$source_checkout"; }
 trap cleanup_source EXIT HUP INT TERM
 git clone --quiet "$WORKFLOW_SOURCE" "$source_checkout"
@@ -138,7 +138,7 @@ changed Claude link.
 
 ```sh
 set -eu
-source_checkout=$(mktemp -d)
+source_checkout=$(mktemp -d "${TMPDIR:-/tmp}/workflow-source.XXXXXXXXXX")
 cleanup_source() { rm -R "$source_checkout"; }
 trap cleanup_source EXIT HUP INT TERM
 git clone --quiet "$WORKFLOW_SOURCE" "$source_checkout"
