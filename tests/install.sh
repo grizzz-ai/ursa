@@ -143,6 +143,16 @@ test_dirty_source_refuses_before_target_write() {
   [ ! -e "$target/.agents" ] || fail "dirty source mutated target"
 }
 
+test_documented_lifecycle_uses_tmpdir() {
+  # shellcheck disable=SC2016
+  count=$(grep -F -c 'source_checkout=$(mktemp -d "${TMPDIR:-/tmp}/workflow-source.XXXXXXXXXX")' "$ROOT/docs/installation.md")
+  [ "$count" -eq 2 ] || fail "documented lifecycle does not contain two TMPDIR-scoped checkouts"
+  # shellcheck disable=SC2016
+  if grep -F -x 'source_checkout=$(mktemp -d)' "$ROOT/docs/installation.md" >/dev/null; then
+    fail "documented lifecycle contains an unscoped temporary checkout"
+  fi
+}
+
 test_current_repository_install
 test_explicit_target_preserves_user_files
 test_invalid_invocations_refuse
@@ -151,5 +161,6 @@ test_late_link_failure_rolls_back
 test_check_rejects_mutations
 test_rerun_refuses_completed_install
 test_dirty_source_refuses_before_target_write
+test_documented_lifecycle_uses_tmpdir
 
 printf 'PASS: repository-local installer integration suite\n'
