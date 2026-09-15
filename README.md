@@ -52,6 +52,10 @@ NOTICE                Copyright notice
 
 ## Quickstart
 
+New to VS Code, GitHub, or coding agents? Start with the
+[first-time setup guide](docs/first-time-setup.md). It explains the two directories you will use,
+optional SSH setup, separate Codex and Claude Code sign-in, and the first read-only discovery task.
+
 Clone the workflow once, outside the repositories where you write code:
 
 ```sh
