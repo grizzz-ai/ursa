@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and general feedback
+    url: https://github.com/grizzz-ai/ai-engineering-workflow/discussions
+    about: After public launch enables Discussions, use it for questions and ideas.
+  - name: Security vulnerability
+    url: mailto:zzz@grizzz.ai
+    about: Do not report security vulnerabilities in a public Issue.
