@@ -5,6 +5,10 @@ It never writes to global Codex or Claude Code configuration.
 
 ## Install all six skills
 
+If you are new to VS Code, GitHub, or coding agents, begin with
+[First-time setup](first-time-setup.md). This page is the technical reference for the installer and
+advanced lifecycle operations.
+
 Clone the workflow once outside your consuming repositories, using the repository URL in the
 [README quickstart](../README.md#quickstart). The examples below assume that clone is stored at
 `$HOME/.local/share/ai-engineering-workflow`.
@@ -48,12 +52,15 @@ need per-skill lifecycle control; V1 does not provide bulk update or removal mod
 
 ## Prerequisites
 
-Authenticate Git for private GitHub repositories once:
+Only when the workflow source is a **private** GitHub repository, authenticate Git once:
 
 ```sh
 gh auth status
 gh auth setup-git
 ```
+
+Public HTTPS clones do not require `gh auth`. GitHub access, Codex sign-in, and Claude Code sign-in
+are separate account flows.
 
 Set a source repository, a full source commit, a skill name, and the consuming repository.
 `WORKFLOW_SOURCE` may be a local clone during verification.
