@@ -1,62 +1,61 @@
 # AI Engineering Workflow
 
-A vendor-neutral engineering workflow designed for use with Codex and Claude Code.
+Use Codex or Claude Code on a real project without asking an AI to immediately change code and hoping
+for the best.
 
 Developed by [Grizzz AI](https://github.com/grizzz-ai).
 
-## Status
+## Why use this?
 
-The six workflow skills and one worked example are present as a private publication candidate.
-Repository-local discovery has been verified with Codex `0.153.4` and Claude Code `2.1.2`, where skills appear as direct commands.
-Clean-room publication review and public launch remain follow-up work.
+This repository gives your project a repeatable way to work with coding agents: understand the project,
+propose a plan, have someone else review the plan, make the approved change, review the result, and leave
+a clear handoff for the next human decision.
 
-## Workflow
+It is useful when you want AI help but still want to know what is changing and why. The workflow never
+commits, pushes, opens a pull request, merges, deploys, or publishes on its own. You keep those decisions.
 
-The workflow uses six skills in sequence:
+You can use Codex, Claude Code, or both. The workflow requires a reviewer who did not write the plan or
+code. Using two runtimes can be a useful team practice, but it neither creates nor proves independent
+review by itself: the reviewing actor must still be distinct.
 
-1. `discovery`
-2. `plan`
-3. `plan-audit`
-4. `implement`
-5. `code-audit`
-6. `handoff`
+## What the six skills do
 
-Each skill has one canonical body under `.agents/skills/<name>/SKILL.md`. Claude Code uses a
-relative link under `.claude/skills/<name>` in the consuming repository, so both runtimes discover
-the same physical file.
+| Step | Skill | What it does | Who checks it |
+| --- | --- | --- | --- |
+| 1 | `discovery` | Reads the repository and records the starting facts. | The next planner uses those facts. |
+| 2 | `plan` | Proposes a small, testable change before files are edited. | A distinct reviewer checks the plan. |
+| 3 | `plan-audit` | Challenges the plan, scope, risks, and checks. | An actor other than the planner. |
+| 4 | `implement` | Makes only the change approved by the plan. | A distinct code reviewer checks the result. |
+| 5 | `code-audit` | Compares the completed work with the plan and actual diff. | An actor other than the implementer. |
+| 6 | `handoff` | Records evidence and names the next human decision. | You decide whether to commit, push, or merge. |
 
-Each task keeps durable evidence under `.ai-workflow/<task-key>/`. Producer artifacts use revisions
-and hashes; plan and code audits are append-only independent gates. The handoff records whether those
-artifacts are tracked, local, or pending and stops before merge.
-
-See the [Fail-Closed Configuration Example](examples/config-validation/README.md) for a synthetic
-TypeScript change carried through this file-based workflow.
-
-## Repository layout
-
-```text
-.agents/skills/       Canonical skill source
-docs/installation.md  Install, update, validate, and remove recipes
-examples/              Synthetic worked examples
-LICENSE               Apache License 2.0
-NOTICE                Copyright notice
+```mermaid
+flowchart LR
+  D[Discovery] --> P[Plan]
+  P --> PA[Plan audit: distinct reviewer]
+  PA --> I[Implement]
+  I --> CA[Code audit: distinct reviewer]
+  CA --> H[Handoff: human decision]
 ```
 
-## Requirements
+The six skills are installed inside the project you choose. They do not change your project code, Git
+configuration, existing `AGENTS.md` or `CLAUDE.md`, or global agent settings.
 
-- Git
-- GitHub access to clone this repository while it remains private
-- A user-owned Git repository where the skills will be installed
-- Codex `0.153.4`, the compatibility-tested version
-- Claude Code `2.1.2`, the compatibility-tested version
+## Start here
+
+If you are new to VS Code, GitHub, or coding agents, read the
+[first-time setup guide](docs/first-time-setup.md). It defines VS Code, a project repository, and the
+integrated Terminal before asking you to type anything. It starts with a small local Git repository so
+you can practise safely.
+
+The first local experiment does **not** need a GitHub account. You need a GitHub connection later when
+you want to use GitHub branches, pull requests, and review. SSH is recommended; HTTPS with `gh auth`
+is another option.
 
 ## Quickstart
 
-New to VS Code, GitHub, or coding agents? Start with the
-[first-time setup guide](docs/first-time-setup.md). It explains the two directories you will use,
-optional SSH setup, separate Codex and Claude Code sign-in, and the first read-only discovery task.
-
-Clone the workflow once, outside the repositories where you write code:
+When you are ready, clone this workflow once outside the repositories where you write code. In VS Code,
+open **Terminal > New Terminal**, then run these lines one at a time:
 
 ```sh
 mkdir -p "$HOME/.local/share"
@@ -64,47 +63,67 @@ cd "$HOME/.local/share"
 git clone https://github.com/grizzz-ai/ai-engineering-workflow.git
 ```
 
-Open an existing Git repository in VS Code, use its integrated terminal, and install the workflow into
-the repository you opened:
+Open the Git repository where you want help with your code. This is your **project repository**. In that
+repository's VS Code terminal, run:
 
 ```sh
-cd /path/to/your-project
 "$HOME/.local/share/ai-engineering-workflow/install.sh"
 ```
 
-You can instead select another repository explicitly:
+The installer copies the six workflow skill files into your selected project and creates local Claude
+Code links to the same files. It records where they came from and checks the result.
 
-```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --target /path/to/your-project
-```
-
-The installer copies all six canonical skill files into the selected repository, creates local Claude
-Code links to those copies, records their source commit and blob hashes, and validates the result. It
-does not change project code, `AGENTS.md`, `CLAUDE.md`, Git configuration, or global agent settings.
-
-GitHub, Codex, and Claude Code authenticate separately. GitHub authentication only grants access to
-clone repositories. Sign in to Codex and Claude Code through each product's own supported sign-in flow;
-the installer never reads or stores model credentials.
-
-After signing in, open the target repository in VS Code and start with:
-
-> Use the discovery skill to inspect this repository and identify the best next engineering task.
-
-Run the read-only check at any time from the target repository:
+To confirm the installation later without changing anything, run this from your project repository:
 
 ```sh
 "$HOME/.local/share/ai-engineering-workflow/install.sh" --check
 ```
 
-See [Installation](docs/installation.md) for the installed layout, validation behavior, and guarded
-per-skill update and removal recipes.
+Then open a Codex or Claude Code session in that project and begin with:
 
-## Limitations
+> Use the discovery skill to inspect this repository without changing files. Summarize its purpose,
+> current Git status, and the next safest task.
+
+For detailed installation layout, validation, update, and removal procedures, see
+[Installation](docs/installation.md). For a complete example, see the
+[Fail-Closed Configuration Example](examples/config-validation/README.md).
+
+## What you need
+
+- Git.
+- A Git repository you own or are allowed to work in.
+- Codex and/or Claude Code, installed and signed in through each product's supported flow.
+- GitHub access only when cloning this repository while it remains private, or when you later use
+  GitHub branches, pull requests, and review.
+
+The compatibility checks used Codex `0.153.4` and Claude Code `2.1.2` on macOS. They are tested
+configurations, not a claim that these are the only usable versions. Windows compatibility has not been
+verified.
+
+## Repository layout
+
+```text
+.agents/skills/     Canonical source for the six workflow skills
+.ai-workflow/       Worked workflow evidence
+.github/            Issue and pull-request intake templates
+CONTRIBUTING.md     Contribution guidance
+docs/               Beginner and technical installation guides
+examples/           Synthetic worked example
+install.sh          Repository-local installer
+LICENSE             Apache License 2.0
+NOTICE              Copyright notice
+package.json        Configuration-example test script
+README.md           This introduction
+SECURITY.md         Private security-reporting instructions
+SUPPORT.md          Bug, question, and feedback routes
+tests/              Installer integration checks
+```
+
+## Limits
 
 - The worked example demonstrates a narrow repository-local correction, not production readiness.
+- Independent review depends on distinct people or actors; two AI clients alone do not supply it.
 - Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
-- The compatibility evidence currently targets macOS with the runtime versions listed above.
-- Windows compatibility has not been verified.
 
 ## Support
 

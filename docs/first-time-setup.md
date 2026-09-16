@@ -1,35 +1,35 @@
 # First-time setup
 
-This guide is for a first-time user of VS Code, GitHub, or coding agents on macOS. It prepares one
-local Git repository for the AI Engineering Workflow and starts with a read-only discovery task.
+This guide is for someone using VS Code, GitHub, or coding agents for the first time on macOS. You will
+prepare one small project repository, add the workflow to it, and start with a read-only question.
 
-The guide is written for **VS Code**, not Visual Studio. Windows support has not been verified for
-this workflow.
+You are using **VS Code**, not Visual Studio. Windows compatibility has not been verified.
 
-## The two directories
+## What you will have at the end
 
-You use two separate folders:
+You will have one project folder open in VS Code. Inside that project, Codex and Claude Code can find the
+same six workflow skills. Nothing here changes your project code, your global agent settings, or your
+Git configuration.
 
-1. The **workflow clone** is a copy of this repository. Keep it outside the projects where you work.
-2. Your **project repository** is the Git repository you choose to open in VS Code. The installer
-   puts the six workflow skills in this project, and this is where you ask Codex or Claude Code to
-   work.
+## Three words used in this guide
 
-Do not run the installer with the workflow clone as its target.
+- **VS Code** is the app where you open and edit a folder of code.
+- A **project repository** is the folder containing the code you want to work on. Git tracks its history.
+- The **integrated Terminal** is a command window inside VS Code. It runs commands in the folder you opened.
 
 ## 1. Install VS Code and Git
 
-Install [VS Code](https://code.visualstudio.com/) and Git for macOS. Open VS Code, then use
-**File > Open Folder** to open your project repository. Use **Terminal > New Terminal** to open the
-integrated terminal for that project.
+Install [VS Code](https://code.visualstudio.com/) and Git for macOS. Open VS Code, choose
+**File > Open Folder**, and choose your project folder. Then choose **Terminal > New Terminal**.
 
-Check that Git is available:
+Type this to check that Git is installed. It only prints the installed Git version:
 
 ```sh
 git --version
 ```
 
-If you do not yet have a project, create a small local Git repository for practice:
+If you do not have a project yet, make a small practice project. These commands create a folder, make it
+a local Git repository, and open that folder in VS Code:
 
 ```sh
 mkdir -p "$HOME/Developer/my-project"
@@ -38,45 +38,44 @@ git init
 code .
 ```
 
-## 2. Optional: set up GitHub SSH
+`code .` is a VS Code convenience command. If it is unavailable, use **File > Open Folder** instead.
 
-SSH is useful when you later clone or push your own GitHub repositories. It is not needed to clone
-this workflow over public HTTPS after the repository is published.
+## 2. Decide when you need GitHub
 
-Follow GitHub's [SSH setup guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
-For a new key, use your own GitHub email as the comment:
+You do **not** need a GitHub account for the first local practice run. A local Git repository is enough
+to install the workflow and inspect it with discovery.
+
+You need a GitHub connection later if you want to use GitHub branches, pull requests, and review. SSH is
+recommended. HTTPS with `gh auth` is an alternative.
+
+Before making a new SSH key, follow GitHub's
+[SSH setup guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh). If you need
+a new key, GitHub documents this command; replace the placeholder with your GitHub email:
 
 ```sh
 ssh-keygen -t ed25519 -C "you@example.com"
 ```
 
-The private key stays on your Mac. Only the matching public key, normally
-`~/.ssh/id_ed25519.pub`, is added in GitHub under **Settings > SSH and GPG keys**. Never paste or
-upload the private key to GitHub, VS Code settings, a repository, a chat, or an issue.
-
-GitHub authentication is separate from Codex and Claude Code sign-in.
+The private key stays on your Mac. Only the matching public key, normally `~/.ssh/id_ed25519.pub`, is
+added in GitHub under **Settings > SSH and GPG keys**. Never paste or upload a private key to GitHub, VS
+Code settings, a repository, a chat, or an issue.
 
 ## 3. Set up Codex and Claude Code
 
-Install and sign in to each tool through its own supported flow:
+Install and sign in to each tool through its own supported flow. Signing in to one does not sign you in
+to the other:
 
 - [Codex with your ChatGPT plan](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
 - [Claude Code getting started](https://code.claude.com/docs/en/getting-started)
 
-Use your own account in each product. Do not put an API key, access token, or password in your
-repository. From the VS Code terminal, these commands can confirm that the tools are available:
-
-```sh
-codex --version
-claude --version
-```
-
-If one command is unavailable, return to that product's official setup guide. Installing or signing
-in to one tool does not sign you in to the other.
+Use your own account. Do not put an API key, access token, or password in your repository. You can use
+either runtime, or use both as part of your team's review practice; you still need a distinct reviewer
+for independent review.
 
 ## 4. Clone the workflow once
 
-When this repository is public, clone it over HTTPS outside your project repositories:
+The workflow repository is a separate folder from your project. Keep it outside the projects where you
+write code. The following commands create a common location, move into it, and download the workflow:
 
 ```sh
 mkdir -p "$HOME/.local/share"
@@ -84,27 +83,20 @@ cd "$HOME/.local/share"
 git clone https://github.com/grizzz-ai/ai-engineering-workflow.git
 ```
 
-Until the repository is public, you need access to clone it. Public availability is controlled by a
-separate launch step; this guide does not change repository visibility.
+Until the repository is public, you need access to clone it. After public launch, anyone can clone it
+over HTTPS. This guide does not change repository visibility.
 
-## 5. Install skills into your project
+## 5. Install the skills into your project
 
-Return to the Git repository you opened in VS Code. Run the installer from that repository:
+Return to the project repository you opened in VS Code. This command installs the workflow into that
+project, not into the workflow clone:
 
 ```sh
-cd /path/to/your-project
 "$HOME/.local/share/ai-engineering-workflow/install.sh"
 ```
 
-To install into another Git repository explicitly, use:
-
-```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --target /path/to/your-project
-```
-
-The installer leaves your project code, `AGENTS.md`, `CLAUDE.md`, Git configuration, and global
-agent settings unchanged. It creates six canonical skill files under `.agents/skills/` and six
-relative links under `.claude/skills/` so both runtimes use the same local skill body.
+The installer creates six canonical files under `.agents/skills/` and six relative links under
+`.claude/skills/`. Both Codex and Claude Code then use the same local skill bodies.
 
 Check the installation without changing anything:
 
@@ -114,27 +106,25 @@ Check the installation without changing anything:
 
 ## 6. Start with discovery
 
-Open the target project in VS Code and start a Codex or Claude Code session there. Use this request:
+Open a Codex or Claude Code session in the project repository. Ask it to inspect before it changes
+anything:
 
 > Use the discovery skill to inspect this repository without changing files. Summarize its purpose,
 > current Git status, and the next safest task.
 
-If your client shows slash commands, choose `/discovery` and include the same request. Discovery is
-the first skill because it reads the project before anyone changes it.
+Discovery reads the project first. If your client displays slash commands, choose `/discovery` and add
+the same request.
 
-The six skills are used in order:
+When you are ready to make a change, use the skills in order:
 
 | Skill | Purpose |
 | --- | --- |
-| `discovery` | Inspect the repository and identify the next task. |
-| `plan` | Propose a bounded implementation plan. |
-| `plan-audit` | Independently check the plan before implementation. |
+| `discovery` | Understand the repository and identify a safe next task. |
+| `plan` | Propose a bounded change before editing. |
+| `plan-audit` | Have a distinct reviewer challenge the plan. |
 | `implement` | Make the approved change. |
-| `code-audit` | Independently review the completed change. |
-| `handoff` | Record evidence and the next human decision. |
-
-Commit, push, pull-request creation, merge, deployment, and publication each require a separate
-decision. Do not treat an AI session as permission to perform those actions.
+| `code-audit` | Have a distinct reviewer check the completed diff. |
+| `handoff` | Record evidence and leave the next decision to a human. |
 
 ## Troubleshooting
 
@@ -142,9 +132,9 @@ decision. Do not treat an AI session as permission to perform those actions.
 | --- | --- |
 | `target is not a Git repository` | Open or create a Git repository, run `git init` if appropriate, then run the installer again. |
 | `Permission denied (publickey)` | Recheck GitHub's SSH guide and confirm that you added the `.pub` file, not the private key. |
-| `codex` or `claude` is not found | Finish the corresponding official setup, open a new terminal, then run its `--version` command. |
+| `codex` or `claude` is not found | Finish the corresponding official setup, then open a new VS Code terminal. |
 | A skill command does not appear | Run `install.sh --check` from the target repository and restart the relevant client in that target. |
 
-For installer details, per-skill lifecycle operations, and safe removal, see
+For technical installer details, per-skill lifecycle operations, and safe removal, see
 [Installation](installation.md). For problems with this guide, open a
 [GitHub issue](https://github.com/grizzz-ai/ai-engineering-workflow/issues).
