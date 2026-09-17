@@ -60,17 +60,37 @@ The private key stays on your Mac. Only the matching public key, normally `~/.ss
 added in GitHub under **Settings > SSH and GPG keys**. Never paste or upload a private key to GitHub, VS
 Code settings, a repository, a chat, or an issue.
 
-## 3. Set up Codex and Claude Code
+## 3. Add the two AI helpers to VS Code
 
-Install and sign in to each tool through its own supported flow. Signing in to one does not sign you in
-to the other:
+The recommended setup is **two agents from different providers**: use one to do the work and ask the
+other to review the plan and the finished change. That gives you another point of view when you do not
+have time or experience to check every technical detail yourself.
 
-- [Codex with your ChatGPT plan](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
-- [Claude Code getting started](https://code.claude.com/docs/en/getting-started)
+You can start with one agent if that is all you have. For independent review, the reviewer must be a
+separate agent and session from the author. Two agents do not remove your final decision: you still
+decide whether to commit, push, or merge.
 
-Use your own account. Do not put an API key, access token, or password in your repository. You can use
-either runtime, or use both as part of your team's review practice; you still need a distinct reviewer
-for independent review.
+### Install Claude Code
+
+1. In VS Code, click the **Extensions** icon in the left sidebar, or press `Cmd+Shift+X`.
+2. Search for **Claude Code**, select the official extension, and click **Install**.
+3. Open it from the Spark icon in the sidebar or the Command Palette, then sign in in your browser.
+
+The extension gives you a chat panel, proposed diffs, and a way to review plans inside VS Code. Claude's
+official [VS Code guide](https://code.claude.com/docs/en/vs-code) has screenshots and troubleshooting.
+
+### Install Codex
+
+1. In the same **Extensions** view, search for **Codex**, select the OpenAI extension, and click
+   **Install**.
+2. Open the Codex panel and sign in with the ChatGPT account you want to use.
+
+Codex also works in VS Code and compatible editors. The official
+[Codex setup guide](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan)
+explains account access and IDE support.
+
+Use your own accounts. Do not put an API key, access token, or password in a repository, chat, or issue.
+After both panels work, choose one agent as the author and the other as the reviewer for the next task.
 
 ## 4. Clone the workflow once
 
