@@ -1,5 +1,5 @@
 ---
-name: discovery
+name: ursa-discover
 description: Restore repository facts and create the durable starting point for an engineering task.
 ---
 

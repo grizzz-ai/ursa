@@ -1,5 +1,5 @@
 ---
-name: handoff
+name: ursa-handoff
 description: Preserve reviewed evidence and execute only separately authorized delivery actions.
 ---
 

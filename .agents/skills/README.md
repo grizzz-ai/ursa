@@ -4,12 +4,12 @@ This directory is the single source for workflow skill bodies.
 
 The workflow directories are:
 
-- `discovery`
-- `plan`
-- `plan-audit`
-- `implement`
-- `code-audit`
-- `handoff`
+- `ursa-discover`
+- `ursa-plan`
+- `ursa-plan-audit`
+- `ursa-implement`
+- `ursa-code-audit`
+- `ursa-handoff`
 
 All six canonical skill bodies are present. They form one ordered workflow; audit roles must use an
 actor identity distinct from the producer they review.

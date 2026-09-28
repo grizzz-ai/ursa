@@ -1,5 +1,5 @@
 ---
-name: code-audit
+name: ursa-code-audit
 description: Independently review an implementation against its approved plan and exact repository diff.
 ---
 

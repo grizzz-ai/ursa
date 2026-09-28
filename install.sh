@@ -2,7 +2,7 @@
 
 set -eu
 
-SKILLS="discovery plan plan-audit implement code-audit handoff"
+SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff"
 MODE=install
 TARGET_INPUT=
 SEEN_MODE=0
@@ -67,7 +67,7 @@ validate_installation() {
     rel=.agents/skills/$name/SKILL.md
     canonical_dir=$TARGET_ROOT/.agents/skills/$name
     canonical_file=$canonical_dir/SKILL.md
-    origin_file=$canonical_dir/.ai-engineering-workflow-origin
+    origin_file=$canonical_dir/.ursa-origin
     claude_link=$TARGET_ROOT/.claude/skills/$name
     expected_blob=$(git -C "$SOURCE_ROOT" rev-parse "HEAD:$rel") || return 1
     [ -f "$canonical_file" ] && [ ! -L "$canonical_file" ] || return 1
@@ -110,7 +110,7 @@ cleanup() {
   if [ "$COMMITTED" -eq 0 ]; then
     for name in $SKILLS; do
       rm -f "$TARGET_ROOT/.claude/skills/$name"
-      rm -f "$TARGET_ROOT/.agents/skills/$name/.ai-engineering-workflow-origin"
+      rm -f "$TARGET_ROOT/.agents/skills/$name/.ursa-origin"
       rm -f "$TARGET_ROOT/.agents/skills/$name/SKILL.md"
       rmdir "$TARGET_ROOT/.agents/skills/$name" 2>/dev/null || true
     done
@@ -137,7 +137,7 @@ for name in $SKILLS; do
   mkdir "$canonical_dir"
   cp "$SOURCE_ROOT/$rel" "$canonical_dir/SKILL.md"
   source_blob=$(git -C "$SOURCE_ROOT" rev-parse "HEAD:$rel")
-  printf 'ref=%s\nhash=%s\n' "$SOURCE_REF" "$source_blob" > "$canonical_dir/.ai-engineering-workflow-origin"
+  printf 'ref=%s\nhash=%s\n' "$SOURCE_REF" "$source_blob" > "$canonical_dir/.ursa-origin"
   ln -s "../../.agents/skills/$name" "$TARGET_ROOT/.claude/skills/$name"
 done
 

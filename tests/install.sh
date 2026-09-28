@@ -4,7 +4,7 @@ set -eu
 
 ROOT=$(CDPATH='' cd "$(dirname "$0")/.." && pwd -P)
 INSTALLER=$ROOT/install.sh
-SKILLS="discovery plan plan-audit implement code-audit handoff"
+SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff"
 TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/workflow-install-test.XXXXXX")
 trap 'chmod -R u+w "$TMP_ROOT" 2>/dev/null || true; rm -R "$TMP_ROOT"' EXIT HUP INT TERM
 
@@ -32,7 +32,7 @@ assert_installed() {
   for name in $SKILLS; do
     source_file=$ROOT/.agents/skills/$name/SKILL.md
     target_file=$target/.agents/skills/$name/SKILL.md
-    origin=$target/.agents/skills/$name/.ai-engineering-workflow-origin
+    origin=$target/.agents/skills/$name/.ursa-origin
     link=$target/.claude/skills/$name
     [ -f "$target_file" ] || fail "missing installed skill: $name"
     cmp -s "$source_file" "$target_file" || fail "installed bytes differ: $name"
@@ -83,13 +83,13 @@ test_occupied_destinations_refuse_before_write() {
     target=$TMP_ROOT/occupied-$kind
     new_repo "$target"
     case "$kind" in
-      canonical) mkdir -p "$target/.agents/skills/discovery" ;;
-      link) mkdir -p "$target/.claude/skills"; ln -s elsewhere "$target/.claude/skills/discovery" ;;
-      partial) mkdir -p "$target/.agents/skills/plan"; printf 'existing\n' > "$target/.agents/skills/plan/SKILL.md" ;;
+      canonical) mkdir -p "$target/.agents/skills/ursa-discover" ;;
+      link) mkdir -p "$target/.claude/skills"; ln -s elsewhere "$target/.claude/skills/ursa-discover" ;;
+      partial) mkdir -p "$target/.agents/skills/ursa-plan"; printf 'existing\n' > "$target/.agents/skills/ursa-plan/SKILL.md" ;;
     esac
     run_fail "$INSTALLER" --target "$target"
-    [ ! -e "$target/.agents/skills/handoff" ] || fail "occupied target was partially installed: $kind"
-    [ ! -e "$target/.claude/skills/handoff" ] || fail "occupied target gained links: $kind"
+    [ ! -e "$target/.agents/skills/ursa-handoff" ] || fail "occupied target was partially installed: $kind"
+    [ ! -e "$target/.claude/skills/ursa-handoff" ] || fail "occupied target gained links: $kind"
   done
 }
 
@@ -113,9 +113,9 @@ test_check_rejects_mutations() {
     new_repo "$target"
     "$INSTALLER" --target "$target" >/dev/null
     case "$kind" in
-      file) printf '\nchanged\n' >> "$target/.agents/skills/discovery/SKILL.md" ;;
-      link) rm "$target/.claude/skills/discovery"; ln -s wrong "$target/.claude/skills/discovery" ;;
-      metadata) printf 'ref=wrong\nhash=wrong\n' > "$target/.agents/skills/discovery/.ai-engineering-workflow-origin" ;;
+      file) printf '\nchanged\n' >> "$target/.agents/skills/ursa-discover/SKILL.md" ;;
+      link) rm "$target/.claude/skills/ursa-discover"; ln -s wrong "$target/.claude/skills/ursa-discover" ;;
+      metadata) printf 'ref=wrong\nhash=wrong\n' > "$target/.agents/skills/ursa-discover/.ursa-origin" ;;
     esac
     run_fail "$INSTALLER" --check --target "$target"
   done
@@ -125,9 +125,9 @@ test_rerun_refuses_completed_install() {
   target=$TMP_ROOT/rerun
   new_repo "$target"
   "$INSTALLER" --target "$target" >/dev/null
-  before=$(git -C "$target" hash-object .agents/skills/discovery/SKILL.md)
+  before=$(git -C "$target" hash-object .agents/skills/ursa-discover/SKILL.md)
   run_fail "$INSTALLER" --target "$target"
-  after=$(git -C "$target" hash-object .agents/skills/discovery/SKILL.md)
+  after=$(git -C "$target" hash-object .agents/skills/ursa-discover/SKILL.md)
   [ "$before" = "$after" ] || fail "rerun changed installed bytes"
 }
 
@@ -137,7 +137,7 @@ test_dirty_source_refuses_before_target_write() {
   git clone -q "$ROOT" "$source_copy"
   cp "$INSTALLER" "$source_copy/install.sh"
   chmod +x "$source_copy/install.sh"
-  printf '\nchanged\n' >> "$source_copy/.agents/skills/discovery/SKILL.md"
+  printf '\nchanged\n' >> "$source_copy/.agents/skills/ursa-discover/SKILL.md"
   new_repo "$target"
   run_fail "$source_copy/install.sh" --target "$target"
   [ ! -e "$target/.agents" ] || fail "dirty source mutated target"

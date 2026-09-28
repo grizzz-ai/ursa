@@ -1,4 +1,4 @@
-# AI Engineering Workflow
+# Ursa
 
 Use two AI coding agents on a real project without asking one of them to immediately change code and
 hoping for the best.
@@ -31,12 +31,12 @@ guide. The agents use the remaining steps when the task needs them.
 
 | Step | Skill | What it means for you |
 | --- | --- | --- |
-| 1 | `discovery` | The agent learns what your project is and what is safe to do next. |
-| 2 | `plan` | It proposes a small change in plain language before editing files. |
-| 3 | `plan-audit` | The second agent looks for missing steps, risks, and bad assumptions. |
-| 4 | `implement` | The first agent makes only the approved change. |
-| 5 | `code-audit` | The second agent checks the actual diff against the plan. |
-| 6 | `handoff` | You receive the evidence and decide whether anything is committed or merged. |
+| 1 | `ursa-discover` | The agent learns what your project is and what is safe to do next. |
+| 2 | `ursa-plan` | It proposes a small change in plain language before editing files. |
+| 3 | `ursa-plan-audit` | The second agent looks for missing steps, risks, and bad assumptions. |
+| 4 | `ursa-implement` | The first agent makes only the approved change. |
+| 5 | `ursa-code-audit` | The second agent checks the actual diff against the plan. |
+| 6 | `ursa-handoff` | You receive the evidence and decide whether anything is committed or merged. |
 
 ```mermaid
 flowchart LR
@@ -71,14 +71,14 @@ open **Terminal > New Terminal**, then run these lines one at a time:
 ```sh
 mkdir -p "$HOME/.local/share"
 cd "$HOME/.local/share"
-git clone https://github.com/grizzz-ai/ai-engineering-workflow.git
+git clone https://github.com/grizzz-ai/ursa.git
 ```
 
 Open the Git repository where you want help with your code. This is your **project repository**. In that
 repository's VS Code terminal, run:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh"
+"$HOME/.local/share/ursa/install.sh"
 ```
 
 The installer copies the six workflow skill files into your selected project and creates local Claude
@@ -87,12 +87,12 @@ Code links to the same files. It records where they came from and checks the res
 To confirm the installation later without changing anything, run this from your project repository:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --check
+"$HOME/.local/share/ursa/install.sh" --check
 ```
 
 Then open a Codex or Claude Code session in that project and begin with:
 
-> Use the discovery skill to inspect this repository without changing files. Summarize its purpose,
+> Use the ursa-discover skill to inspect this repository without changing files. Summarize its purpose,
 > current Git status, and the next safest task.
 
 For detailed installation layout, validation, update, and removal procedures, see
@@ -138,7 +138,7 @@ tests/              Installer integration checks
 
 ## Support
 
-Use [GitHub Issues](https://github.com/grizzz-ai/ai-engineering-workflow/issues) for installation problems, documentation errors, and reproducible compatibility reports.
+Use [GitHub Issues](https://github.com/grizzz-ai/ursa/issues) for installation problems, documentation errors, and reproducible compatibility reports.
 
 ## License
 

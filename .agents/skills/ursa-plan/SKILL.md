@@ -1,5 +1,5 @@
 ---
-name: plan
+name: ursa-plan
 description: Convert verified discovery evidence into a bounded and testable implementation plan.
 ---
 
