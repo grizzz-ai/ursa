@@ -1,5 +1,5 @@
 ---
-name: implement
+name: ursa-implement
 description: Execute one approved plan revision and leave a truthful implementation record for review.
 ---
 

@@ -11,30 +11,30 @@ advanced lifecycle operations.
 
 Clone the workflow once outside your consuming repositories, using the repository URL in the
 [README quickstart](../README.md#quickstart). The examples below assume that clone is stored at
-`$HOME/.local/share/ai-engineering-workflow`.
+`$HOME/.local/share/ursa`.
 
 From the Git repository currently open in VS Code, run:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh"
+"$HOME/.local/share/ursa/install.sh"
 ```
 
 The no-argument form resolves the current Git root. To select a repository from another directory, use:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --target /path/to/project
+"$HOME/.local/share/ursa/install.sh" --target /path/to/project
 ```
 
-The fixed manifest installs `discovery`, `plan`, `plan-audit`, `implement`, `code-audit`, and `handoff`.
+The fixed manifest installs `ursa-discover`, `ursa-plan`, `ursa-plan-audit`, `ursa-implement`, `ursa-code-audit`, and `ursa-handoff`.
 Each canonical body is copied to `.agents/skills/<name>/SKILL.md`; each
 `.claude/skills/<name>` entry is a relative link to that canonical repository-local directory. The
 source-only `.agents/skills/README.md` is deliberately not copied into consuming repositories.
 
-Each installed directory also contains `.ai-engineering-workflow-origin`, recording the exact source
+Each installed directory also contains `.ursa-origin`, recording the exact source
 commit and Git blob hash. Validate all files, records, and links without changing anything:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --check
+"$HOME/.local/share/ursa/install.sh" --check
 ```
 
 The installer refuses a non-Git target, a changed workflow source, an occupied or partial destination,
@@ -97,7 +97,7 @@ resolved_ref=$(git -C "$source_checkout" rev-parse HEAD)
 source_skill=$source_checkout/.agents/skills/$SKILL_NAME/SKILL.md
 canonical_dir=$TARGET_REPO/.agents/skills/$SKILL_NAME
 canonical_skill=$canonical_dir/SKILL.md
-origin_file=$canonical_dir/.ai-engineering-workflow-origin
+origin_file=$canonical_dir/.ursa-origin
 claude_link=$TARGET_REPO/.claude/skills/$SKILL_NAME
 [ -f "$source_skill" ] || { echo "source skill missing" >&2; exit 1; }
 [ ! -e "$canonical_dir" ] && [ ! -L "$canonical_dir" ] || { echo "canonical destination occupied" >&2; exit 1; }
@@ -125,7 +125,7 @@ not a second skill body.
 set -eu
 canonical_dir=$TARGET_REPO/.agents/skills/$SKILL_NAME
 canonical_skill=$canonical_dir/SKILL.md
-origin_file=$canonical_dir/.ai-engineering-workflow-origin
+origin_file=$canonical_dir/.ursa-origin
 claude_link=$TARGET_REPO/.claude/skills/$SKILL_NAME
 [ -f "$canonical_skill" ] && [ -f "$origin_file" ] && [ -L "$claude_link" ]
 [ "$(readlink "$claude_link")" = "../../.agents/skills/$SKILL_NAME" ]
@@ -156,7 +156,7 @@ resolved_ref=$(git -C "$source_checkout" rev-parse HEAD)
 source_skill=$source_checkout/.agents/skills/$SKILL_NAME/SKILL.md
 canonical_dir=$TARGET_REPO/.agents/skills/$SKILL_NAME
 canonical_skill=$canonical_dir/SKILL.md
-origin_file=$canonical_dir/.ai-engineering-workflow-origin
+origin_file=$canonical_dir/.ursa-origin
 claude_link=$TARGET_REPO/.claude/skills/$SKILL_NAME
 [ -f "$source_skill" ] && [ -f "$canonical_skill" ] && [ -f "$origin_file" ] || { echo "installation incomplete" >&2; exit 1; }
 [ -L "$claude_link" ] && [ "$(readlink "$claude_link")" = "../../.agents/skills/$SKILL_NAME" ] || { echo "Claude link changed" >&2; exit 1; }
@@ -184,7 +184,7 @@ Removal refuses a locally modified file or changed link and deletes only paths o
 set -eu
 canonical_dir=$TARGET_REPO/.agents/skills/$SKILL_NAME
 canonical_skill=$canonical_dir/SKILL.md
-origin_file=$canonical_dir/.ai-engineering-workflow-origin
+origin_file=$canonical_dir/.ursa-origin
 claude_link=$TARGET_REPO/.claude/skills/$SKILL_NAME
 [ -f "$canonical_skill" ] && [ -f "$origin_file" ] || { echo "installation incomplete" >&2; exit 1; }
 [ -L "$claude_link" ] && [ "$(readlink "$claude_link")" = "../../.agents/skills/$SKILL_NAME" ] || { echo "Claude link changed" >&2; exit 1; }
@@ -194,7 +194,7 @@ while IFS='=' read -r key value; do
 done < "$origin_file"
 [ -n "$recorded_hash" ] && [ "$(git hash-object "$canonical_skill")" = "$recorded_hash" ] || { echo "installed skill modified" >&2; exit 1; }
 if find "$canonical_dir" -mindepth 1 -maxdepth 1 \
-  ! -name SKILL.md ! -name .ai-engineering-workflow-origin -print -quit | grep -q .; then
+  ! -name SKILL.md ! -name .ursa-origin -print -quit | grep -q .; then
   echo "skill directory contains unrelated files" >&2
   exit 1
 fi

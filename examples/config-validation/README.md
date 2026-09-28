@@ -34,3 +34,6 @@ limit, and a negative retry limit.
 
 The example demonstrates one validation change and the repository's file-based workflow. It is not a
 production configuration library, a TypeScript compiler setup, or a security certification.
+
+The [workflow records](../../.ai-workflow/fail-closed-config/) were produced before the Ursa naming
+change. Their recorded identities and hashes are preserved as evidence of that earlier run.

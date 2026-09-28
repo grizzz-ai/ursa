@@ -100,7 +100,7 @@ write code. The following commands create a common location, move into it, and d
 ```sh
 mkdir -p "$HOME/.local/share"
 cd "$HOME/.local/share"
-git clone https://github.com/grizzz-ai/ai-engineering-workflow.git
+git clone https://github.com/grizzz-ai/ursa.git
 ```
 
 Until the repository is public, you need access to clone it. After public launch, anyone can clone it
@@ -112,7 +112,7 @@ Return to the project repository you opened in VS Code. This command installs th
 project, not into the workflow clone:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh"
+"$HOME/.local/share/ursa/install.sh"
 ```
 
 The installer creates six canonical files under `.agents/skills/` and six relative links under
@@ -121,7 +121,7 @@ The installer creates six canonical files under `.agents/skills/` and six relati
 Check the installation without changing anything:
 
 ```sh
-"$HOME/.local/share/ai-engineering-workflow/install.sh" --check
+"$HOME/.local/share/ursa/install.sh" --check
 ```
 
 ## 6. Start with discovery
@@ -129,22 +129,22 @@ Check the installation without changing anything:
 Open a Codex or Claude Code session in the project repository. Ask it to inspect before it changes
 anything:
 
-> Use the discovery skill to inspect this repository without changing files. Summarize its purpose,
+> Use the ursa-discover skill to inspect this repository without changing files. Summarize its purpose,
 > current Git status, and the next safest task.
 
-Discovery reads the project first. If your client displays slash commands, choose `/discovery` and add
-the same request.
+Discovery reads the project first. In Claude Code, choose `/ursa-discover` and add the same request.
+In Codex, use `$ursa-discover` or choose it from the skill selector, then add the request.
 
 When you are ready to make a change, use the skills in order:
 
 | Skill | Purpose |
 | --- | --- |
-| `discovery` | Understand the repository and identify a safe next task. |
-| `plan` | Propose a bounded change before editing. |
-| `plan-audit` | Have a distinct reviewer challenge the plan. |
-| `implement` | Make the approved change. |
-| `code-audit` | Have a distinct reviewer check the completed diff. |
-| `handoff` | Record evidence and leave the next decision to a human. |
+| `ursa-discover` | Understand the repository and identify a safe next task. |
+| `ursa-plan` | Propose a bounded change before editing. |
+| `ursa-plan-audit` | Have a distinct reviewer challenge the plan. |
+| `ursa-implement` | Make the approved change. |
+| `ursa-code-audit` | Have a distinct reviewer check the completed diff. |
+| `ursa-handoff` | Record evidence and leave the next decision to a human. |
 
 ## Troubleshooting
 
@@ -157,4 +157,4 @@ When you are ready to make a change, use the skills in order:
 
 For technical installer details, per-skill lifecycle operations, and safe removal, see
 [Installation](installation.md). For problems with this guide, open a
-[GitHub issue](https://github.com/grizzz-ai/ai-engineering-workflow/issues).
+[GitHub issue](https://github.com/grizzz-ai/ursa/issues).

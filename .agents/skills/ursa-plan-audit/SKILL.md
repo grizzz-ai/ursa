@@ -1,5 +1,5 @@
 ---
-name: plan-audit
+name: ursa-plan-audit
 description: Independently test a saved implementation plan against repository evidence and risk.
 ---
 
