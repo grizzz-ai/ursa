@@ -8,19 +8,36 @@ description: Preserve reviewed evidence and execute only separately authorized d
 Turn a current code-audit PASS into a reviewable operator handoff while keeping artifact disposition,
 commit, push, and pull-request decisions explicit. This stage always stops before merge.
 
-## Inputs
+## Managed inputs
 
-- The fixed `artifact_root`, plan and implementation revisions/hashes, and code-audit round/hash.
-- A handoff `actor_id`, the user-owned repository, reviewed base ref, branch, inventory, and checks.
+Use Git root and active branch tracking GitHub remote; otherwise require one GitHub remote; >1 asks user before reads, not origin or other branch.
+No remotes: BLOCK with repo Code URL and `git remote add origin <URL>` then rerun; accept github.com HTTPS/scp/ssh URLs; unresolved aliases BLOCK.
+Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
+gh failure: probe `gh api --hostname github.com meta` here; network denial requests scoped access and retry; suggest login only for confirmed auth failure.
+Match saved root/repo and any named issue before work reads. Use explicit `--repo`/scoped API.
+Failed reads stop; never equate them with empty lists, read home SSH config, log in or alter remotes.
+Assign one runtime session ID, else a POSIX session token; record its source and authored stages.
+Keep it for this actor; model names, Git email and relabeling never establish an independent session.
+Select a user-chosen task: explicit intent or one eligible record for this repo/stage, never mtime.
+If absent/ambiguous, ask by task description; orientation is not task evidence. No user ID/hash input.
+Read producer-saved `<artifact>.ref`: relative path, revision/round, bare Git blob OID. Recompute hashes;
+check all task/root/repo/base/status/bindings. Missing/partial pairs stop; never manufacture refs.
+Legacy records need fresh producer passes/audits. Changed branch/HEAD/relevant bytes need context
+refresh; material drift invalidates approval. Preserve dirty work; ignore only this pass's outputs.
+Refresh relevant GitHub facts with explicit binding; no token display or secret/global-skill reads.
+Record extra fields: repository_root, github_repo, branch, checked_at, actor_source, session_authorship; hash fields are bare Git blob OIDs.
+Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
+This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
+
 - An artifact disposition decision: `track`, `local`, or `pending`.
 - Separate operator decisions for commit, push, and pull-request creation as each boundary is reached.
 
 ## Steps
 
-1. Read the bound plan, implementation, and code-audit artifacts from the supplied root. Recompute
-   hashes and confirm task identity, revisions, base ref, reviewed inventory, and audit `PASS` agree.
-2. Find the latest complete code-audit round for the current implementation. A later `REVISE` or
-   `BLOCK`, a stale binding, or missing evidence returns `BLOCK`.
+1. Read discovery, plan, governing plan audit, implementation and code audit with saved refs.
+   Confirm all identity/revision/hash/base/inventory bindings; require COMPLETE implementation.
+2. Both governing audits must be latest complete PASS for their exact producer revision/hash.
+   A later REVISE/BLOCK, self-review, stale binding or missing proof returns BLOCK.
 3. Refresh repository instructions, branch, HEAD, status, and complete diff from the reviewed base.
    Any byte or path drift since audit returns `BLOCK` and routes back to implementation review.
 4. Apply artifact disposition before delivery. `track` includes workflow artifacts in reviewed scope;
@@ -40,8 +57,7 @@ commit, push, and pull-request decisions explicit. This stage always stops befor
     Confirm the base branch, issue reference, title, and factual test evidence before using `gh`.
 11. Read the created pull request back and record its URL, base, head, state, and linked issue. A failed
     or mismatched readback returns `BLOCK`; never claim a proposed command as delivery evidence.
-12. Stop before merge in every outcome. PR creation, review readiness, and merge are different decisions;
-    no earlier authorization implies a later one.
+12. Always stop before merge; PR/review/merge need separate authority, never inferred from earlier steps.
 
 ## Output
 

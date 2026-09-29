@@ -8,17 +8,32 @@ description: Execute one approved plan revision and leave a truthful implementat
 Change repository files only within a current independently approved plan. Preserve enough evidence
 for another actor to determine what changed, what was tested, and whether review may begin.
 
-## Inputs
+## Managed inputs
 
-- The task statement, fixed `artifact_root`, and implementer `actor_id`.
-- Expected plan revision and hash plus the governing plan-audit round and hash.
-- The user-owned repository and its planned base reference and working branch.
+Use Git root and active branch tracking GitHub remote; otherwise require one GitHub remote; >1 asks user before reads, not origin or other branch.
+No remotes: BLOCK with repo Code URL and `git remote add origin <URL>` then rerun; accept github.com HTTPS/scp/ssh URLs; unresolved aliases BLOCK.
+Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
+gh failure: probe `gh api --hostname github.com meta` here; network denial requests scoped access and retry; suggest login only for confirmed auth failure.
+Match saved root/repo and any named issue before work reads. Use explicit `--repo`/scoped API.
+Failed reads stop; never equate them with empty lists, read home SSH config, log in or alter remotes.
+Assign one runtime session ID, else a POSIX session token; record its source and authored stages.
+Keep it for this actor; model names, Git email and relabeling never establish an independent session.
+Select a user-chosen task: explicit intent or one eligible record for this repo/stage, never mtime.
+If absent/ambiguous, ask by task description; orientation is not task evidence. No user ID/hash input.
+Read producer-saved `<artifact>.ref`: relative path, revision/round, bare Git blob OID. Recompute hashes;
+check all task/root/repo/base/status/bindings. Missing/partial pairs stop; never manufacture refs.
+Legacy records need fresh producer passes/audits. Changed branch/HEAD/relevant bytes need context
+refresh; material drift invalidates approval. Preserve dirty work; ignore only this pass's outputs.
+Refresh relevant GitHub facts with explicit binding; no token display or secret/global-skill reads.
+Record extra fields: repository_root, github_repo, branch, checked_at, actor_source, session_authorship; hash fields are bare Git blob OIDs.
+Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
+This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
 ## Steps
 
-1. Read `plan.md` and the supplied plan-audit file from the artifact root. Do not locate substitutes.
-2. Recompute both hashes with `git hash-object`. Confirm their revisions, task key, artifact root, and
-   binding fields match the supplied values; an inconsistency returns `BLOCKED`.
+1. Resolve the selected task root; read discovery, plan and governing plan audit with producer refs.
+2. Require task-scoped READY discovery, exact READY plan and latest complete audit PASS.
+   Any identity/revision/hash/base/binding mismatch returns BLOCKED; never choose substitutes.
 3. Confirm the audit actor differs from the plan actor and its verdict is `PASS`. Search later complete
    audit rounds for the same plan; a later `REVISE` or `BLOCK` governs and stops implementation.
 4. Re-read repository instructions and refresh the branch, HEAD, status, and planned paths. Return

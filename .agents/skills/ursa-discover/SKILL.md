@@ -1,50 +1,70 @@
 ---
 name: ursa-discover
-description: Restore repository facts and create the durable starting point for an engineering task.
+description: Explain an existing GitHub project or ground a named task without technical user inputs.
 ---
 
 ## Purpose
 
-Turn a task statement into verified repository context that another agent can use without receiving
-the earlier conversation. This stage observes and records; it does not edit product files.
+Explain this project and current work before a task is chosen, or ground the user's named task.
+This stage observes and records; it does not edit product files or authorize planning from an overview.
 
-## Inputs
+## Access and identity
 
-- A concrete task statement.
-- An `actor_id` that identifies this workflow participant.
-- An optional GitHub issue URL for additional facts.
-- The user-owned Git repository that contains the work.
+Use this Git repo; only current-request task/issue focuses discovery; bare calls always ORIENT, ignoring prior chat tasks. Never ask for IDs.
+Resolve Git root/instructions; active branch tracking GitHub remote else exactly one GitHub remote; >1 asks before reads, not origin/other branch.
+No remotes: BLOCK; ask for repo Code URL, give `git remote add origin <URL>` and rerun; accept github.com HTTPS/scp/ssh; aliases BLOCK.
+Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
+On gh failure, probe `gh api --hostname github.com meta` in this client; Git transport is not API proof.
+Network/sandbox denial: request scoped access, retry original checks; unknown causes BLOCK without guessing.
+Suggest `gh auth login` only for confirmed missing auth or reachable rejection; never auto-change credentials.
+Match any saved canonical root/repo or named issue before work reads; never use gh defaults/swap upstream.
+Use explicit `--repo`/repository API paths. Failed requests BLOCK, never count as empty work lists.
+Do not log in, switch accounts, alter remotes, or inspect home SSH configuration automatically.
+Assign one runtime-session identity, else a POSIX session token; record its source and authorship.
+Keep it for this actor; relabeling, Git email and model/provider names do not make a new reviewer.
+No secret/.env/home-credential/global-skill reads or token display; describe only declared integrations.
+Do not execute project setup/test/deploy commands or enumerate live cloud accounts/resources.
+Preserve dirty files/staged entries; no staging or Git-config writes; create only workflow records/refs, never .gitignore.
+If the user or repo rules prohibit writes or require permission not yet given, skip saving.
+Unsaved means no READY/handoff or workflow/project writes; use `git --no-optional-locks` for reads.
+Save artifact then .ref (relative path, revision/round, bare Git blob OID); all hash fields are bare OIDs; incomplete writes never READY.
+Missing pairs need fresh producer passes, not fabricated refs; detected competing passes BLOCK.
+These checks provide no attestation, tamper-proof storage, locking or transaction guarantees.
 
 ## Steps
 
-1. Confirm the current directory belongs to a Git work tree. If it does not, stop with `BLOCK`.
-2. Read repository instruction files that govern the root and likely changed paths. Record their names.
-3. Inspect the current branch, HEAD commit, working-tree status, recent history, and configured remotes.
-4. When an issue URL is supplied and `gh` is available, read its body, state, relations, and relevant
-   pull requests. Treat unavailable optional GitHub context as a named gap, never as confirmed fact.
-5. Search the repository for files, symbols, tests, documentation, and prior changes related to the
-   requested behavior. Cite concrete paths and Git references for every load-bearing conclusion.
-6. Separate confirmed facts from interpretations and unresolved questions. Do not invent missing state.
-7. Derive a short lowercase `task_key` using letters, digits, and hyphens. Keep one key for the entire
-   workflow; later stages must receive it rather than derive another.
-8. Set `artifact_root` to `.ai-workflow/<task_key>/`. Hash the normalized task statement with
-   `git hash-object --stdin` and use that value as `intent_hash`.
-9. If the artifact root already contains `discovery.md`, compare its task key and intent hash. Continue
-   only when both match. A different or incomplete identity is a collision and returns `BLOCK`.
-10. Create the artifact root through the agent runtime's repository file operations. Never change
-    `.gitignore` automatically and never overwrite artifacts belonging to another intent.
-11. Write `discovery.md` with these exact fields: `task_key`, `artifact_root`, `actor_id`, `revision`,
-    `intent_hash`, `repository_root`, `branch`, `base_ref`, and `status`.
-12. Below the fields, record instructions read, relevant paths, command evidence, constraints, dirty
-    state, related work, confirmed facts, interpretations, gaps, and the recommended planning input.
-13. Hash the saved artifact with `git hash-object <artifact_root>/discovery.md` and report that hash.
+1. Snapshot branch, HEAD, dirty state, last ten commits and remotes; separate facts from interpretation.
+   Read default branch via `gh repo view owner/repo --json defaultBranchRef`; do not trust origin/HEAD.
+2. Read project structure/manifests and documented run/test commands; cite paths and Git refs.
+   Describe declared dependencies/integrations, never live access; report absent tests/instructions.
+3. Read at most 30 open issues and 30 PRs for this repo; label bounded lists and read relevant bodies.
+   Read open milestones with repository-scoped pagination. No GitHub Projects query or scope.
+4. Without a task, explain project purpose/parts, current work, documented checks, gaps and 2–3 choices.
+5. Save `.ai-workflow/_project/overview.md`; `_project` is reserved and never an eligible task key.
+   Fields: `mode: orientation`, `repository_root`, `github_repo`, `actor_id`, `actor_source`,
+   `session_authorship`, `revision`, `branch`, `base_ref`, `checked_at`, `status: ORIENTED|BLOCK`.
+   Add cited facts/gaps/choices; increment its revision. It is not task evidence or plan permission.
+6. With a user-named task, refresh this same pass and focus evidence on that intent.
+7. Trim/collapse ASCII whitespace to one space; retain case/punctuation; hash UTF-8 bytes without
+   a trailing newline via `git hash-object --stdin` as `intent_hash`.
+8. Derive one lowercase letters/digits/hyphens `task_key` and `.ai-workflow/<task_key>/` root.
+   Existing discovery must match root/key/intent/repo; incomplete or different identity BLOCK.
+9. Write `discovery.md`, incrementing its revision; never replace another intent's records.
+   Fields: `task_key`, `artifact_root`, `actor_id`, `revision`, `intent_hash`, `repository_root`,
+   `branch`, `base_ref`, `status: READY|BLOCK`, `mode: task`, `github_repo`, `checked_at`,
+   `actor_source`, `session_authorship`. Only task discovery with READY may feed planning.
+10. Include instructions, paths/command evidence, constraints, dirty/related work, cited facts,
+    interpretations, gaps and planning input. Hash the saved artifact and save its companion ref.
+11. Keep snapshots current: changed branch/HEAD/relevant bytes require refreshed context; material
+    drift invalidates approval. Distinguish this pass's outputs from pre-existing dirty work.
+12. Resolve artifact collisions before writing; never overwrite another intent or completed audit.
 
 ## Output
 
-- `READY`: a complete `discovery.md`, its revision and hash, and the unchanged `artifact_root` for the
-  planner. Every fact needed for planning is either supported or explicitly marked unresolved.
-- `BLOCK`: a saved `discovery.md` describing missing repository access, an identity collision, or a
-  load-bearing fact that cannot be verified. The operator receives the blocker; no later stage starts.
+- `ORIENTED`: readable overview/choices; state saved with ref or not saved; no selected task or plan authority.
+- `READY`: a named task's complete discovery/ref pair; identity and every fact are verified or a gap.
+- `BLOCK`: explain the failed access/identity/evidence check and exact next action; no later stage starts.
+  Save the blocker only at a safe, validated artifact root; an unsaved report is not durable evidence.
 
 ## Stop conditions
 
@@ -55,6 +75,6 @@ the earlier conversation. This stage observes and records; it does not edit prod
 
 ## Next stage
 
-On `READY`, give the planner only the task statement, `artifact_root`, discovery revision, and discovery
-hash. Do not send the prior chat transcript. On `BLOCK`, wait for the operator to resolve the recorded
-gap and then create a new discovery revision.
+On ORIENTED, ask the user to choose a task. On READY, the planner resolves the saved discovery/ref
+pair for that task; no chat history or manual root/revision/hash/actor input is needed. On BLOCK,
+the operator resolves the gap, then discovery writes a fresh revision and reference.

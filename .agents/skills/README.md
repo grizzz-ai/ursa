@@ -1,8 +1,6 @@
 # Canonical skills
 
-This directory is the single source for workflow skill bodies.
-
-The workflow directories are:
+This directory is the single source for the six workflow skill bodies:
 
 - `ursa-discover`
 - `ursa-plan`
@@ -11,11 +9,24 @@ The workflow directories are:
 - `ursa-code-audit`
 - `ursa-handoff`
 
-All six canonical skill bodies are present. They form one ordered workflow; audit roles must use an
-actor identity distinct from the producer they review.
+Start with `ursa-discover` in the user's GitHub project. With no task, it explains the project,
+current work and possible next steps. After the user chooses a task, discovery grounds that task
+for planning. An overview alone never authorizes planning or implementation.
 
-Consumers copy a canonical skill directory into their repository's `.agents/skills` directory and
-create a relative `.claude/skills/<name>` link to it. This avoids maintaining two skill bodies.
+Each stage requires the project's GitHub remote, `gh` authentication and access to that repository.
+Git transport authentication, including SSH, does not authenticate the GitHub CLI's API requests.
+Missing access stops the stage with a concrete connection action; Projects are outside this workflow.
 
-The workflow persists evidence under `.ai-workflow/<task-key>/`. Commit, push, pull-request creation,
-merge, deployment, and publication remain separate operator decisions.
+Agents manage session identities and saved references; users choose tasks without typing IDs or hashes.
+Audits require a separate reviewing session from the author. Changing a label or model does not
+establish independence, and a later REVISE or BLOCK prevents use of an earlier PASS.
+
+The installer copies only SKILL.md into `.agents/skills/<name>` and creates a relative
+`.claude/skills/<name>` link. This README is source documentation, not an installed dependency.
+
+Orientation is saved in `.ai-workflow/_project/overview.md`; task evidence lives under
+`.ai-workflow/<task_key>/`. Each saved output has a companion `.ref` checked by its recipient.
+A no-write request leaves an unsaved overview and no durable handoff; project files remain unchanged.
+These are agent instructions, not tamper-proof records, identity attestation or executable enforcement.
+
+Commit, push, pull-request creation, merge, deployment and publication remain separate operator decisions.
