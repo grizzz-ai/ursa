@@ -13,7 +13,7 @@ or self-review. This stage reads and appends evidence; it does not edit product 
 Use Git root; branch's tracked GitHub remote else sole GitHub remote; >1 ask before reads; never default to origin; github.com HTTPS/SSH; aliases BLOCK.
 No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add origin <URL>`; other remotes: give `git remote add <unused-name> <URL>`; rerun.
 Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
-gh fail: `gh api --hostname github.com meta`; if network fails, NEVER suggest login; ask scoped access/retry. Login only on meta PASS + confirmed auth failure.
+gh fail: `gh api --hostname github.com meta`; if network fails, NEVER suggest login; ask scoped access/retry. Login only for missing auth (exit 4) or HTTP 401.
 Match saved root/repo and any named issue before work reads. Use explicit `--repo`/scoped API.
 Failed reads stop; never equate them with empty lists, read home SSH config, log in or alter remotes.
 Assign one runtime session ID, else a POSIX session token; record its source and authored stages.

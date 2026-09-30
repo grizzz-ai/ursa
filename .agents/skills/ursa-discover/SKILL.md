@@ -16,7 +16,7 @@ No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add or
 Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
 After any gh failure run `gh api --hostname github.com meta` in this client; Git transport is not API proof.
 If meta exits nonzero with network/sandbox error, NEVER advise login or call the token invalid; request scoped network access, then retry gh checks.
-Only after meta exit 0 may confirmed missing/rejected auth suggest `gh auth login`; unknown causes BLOCK; never auto-change credentials.
+Suggest `gh auth login` only when meta shows missing auth (gh exit 4) or HTTP 401; unknown causes BLOCK; never auto-change credentials.
 Match any saved canonical root/repo or named issue before work reads; never use gh defaults/swap upstream.
 Use explicit `--repo`/repository API paths. Failed requests BLOCK, never count as empty work lists.
 Do not log in, switch accounts, alter remotes, or inspect home SSH configuration automatically.
