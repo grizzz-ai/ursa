@@ -11,8 +11,8 @@ This stage observes and records; it does not edit product files or authorize pla
 ## Access and identity
 
 Use this Git repo; only current-request task/issue focuses discovery; bare calls always ORIENT, ignoring prior chat tasks. Never ask for IDs.
-Resolve Git root/instructions; active branch tracking GitHub remote else exactly one GitHub remote; >1 asks before reads, not origin/other branch.
-No remotes: BLOCK; ask for repo Code URL, give `git remote add origin <URL>` and rerun; accept github.com HTTPS/scp/ssh; aliases BLOCK.
+Find Git root/rules; branch's tracked GitHub remote else sole GitHub remote; >1 ask before reads; never default to origin; github.com HTTPS/SSH; aliases BLOCK.
+No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add origin <URL>`; other remotes: give `git remote add <unused-name> <URL>`; rerun.
 Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
 On gh failure, probe `gh api --hostname github.com meta` in this client; Git transport is not API proof.
 Network/sandbox denial: request scoped access, retry original checks; unknown causes BLOCK without guessing.

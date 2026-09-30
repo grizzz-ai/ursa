@@ -10,8 +10,8 @@ commit, push, and pull-request decisions explicit. This stage always stops befor
 
 ## Managed inputs
 
-Use Git root and active branch tracking GitHub remote; otherwise require one GitHub remote; >1 asks user before reads, not origin or other branch.
-No remotes: BLOCK with repo Code URL and `git remote add origin <URL>` then rerun; accept github.com HTTPS/scp/ssh URLs; unresolved aliases BLOCK.
+Use Git root; branch's tracked GitHub remote else sole GitHub remote; >1 ask before reads; never default to origin; github.com HTTPS/SSH; aliases BLOCK.
+No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add origin <URL>`; other remotes: give `git remote add <unused-name> <URL>`; rerun.
 Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
 gh failure: probe `gh api --hostname github.com meta` here; network denial requests scoped access and retry; suggest login only for confirmed auth failure.
 Match saved root/repo and any named issue before work reads. Use explicit `--repo`/scoped API.
