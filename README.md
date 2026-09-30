@@ -102,9 +102,8 @@ if you or the repository forbid writes, it gives an unsaved overview instead.
 Codex may ask for network access to GitHub. Allow that scoped read so the agent can inspect issues
 and pull requests; a network restriction does not mean your GitHub login is broken.
 
-For detailed installation layout, validation, update, and removal procedures, see
-[Installation](docs/installation.md). For a complete example, see the
-[Fail-Closed Configuration Example](examples/config-validation/README.md).
+For installation details, validation, updates, and removal, see
+[Installation](docs/installation.md).
 
 ## What you need
 
@@ -122,15 +121,11 @@ verified.
 
 ```text
 .agents/skills/     Canonical source for the six workflow skills
-.ai-workflow/       Worked workflow evidence
 .github/            Issue and pull-request intake templates
 CONTRIBUTING.md     Contribution guidance
 docs/               Beginner and technical installation guides
-examples/           Synthetic worked example
 install.sh          Repository-local installer
-LICENSE             Apache License 2.0
-NOTICE              Copyright notice
-package.json        Configuration-example test script
+LICENSE             MIT License
 README.md           This introduction
 SECURITY.md         Private security-reporting instructions
 SUPPORT.md          Bug, question, and feedback routes
@@ -139,7 +134,6 @@ tests/              Installer integration checks
 
 ## Limits
 
-- The worked example demonstrates a narrow repository-local correction, not production readiness.
 - Independent review depends on distinct people or actors; two AI clients alone do not supply it.
 - Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
 
@@ -149,4 +143,4 @@ Use [GitHub Issues](https://github.com/grizzz-ai/ursa/issues) for installation p
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
+Licensed under the MIT License. See [LICENSE](LICENSE).
