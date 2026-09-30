@@ -14,9 +14,9 @@ Use this Git repo; only current-request task/issue focuses discovery; bare calls
 Find Git root/rules; branch's tracked GitHub remote else sole GitHub remote; >1 ask before reads; never default to origin; github.com HTTPS/SSH; aliases BLOCK.
 No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add origin <URL>`; other remotes: give `git remote add <unused-name> <URL>`; rerun.
 Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
-On gh failure, probe `gh api --hostname github.com meta` in this client; Git transport is not API proof.
-Network/sandbox denial: request scoped access, retry original checks; unknown causes BLOCK without guessing.
-Suggest `gh auth login` only for confirmed missing auth or reachable rejection; never auto-change credentials.
+After any gh failure run `gh api --hostname github.com meta` in this client; Git transport is not API proof.
+If meta exits nonzero with network/sandbox error, NEVER advise login or call the token invalid; request scoped network access, then retry gh checks.
+Suggest `gh auth login` only when meta shows missing auth (gh exit 4) or HTTP 401; unknown causes BLOCK; never auto-change credentials.
 Match any saved canonical root/repo or named issue before work reads; never use gh defaults/swap upstream.
 Use explicit `--repo`/repository API paths. Failed requests BLOCK, never count as empty work lists.
 Do not log in, switch accounts, alter remotes, or inspect home SSH configuration automatically.
