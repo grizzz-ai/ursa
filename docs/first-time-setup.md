@@ -1,15 +1,15 @@
 # First-time setup
 
 This guide is for someone using VS Code, GitHub, or coding agents for the first time on macOS. You will
-prepare one small project repository, add the workflow to it, and start with a read-only question.
+open a GitHub project, add the workflow to it, and ask the agent to explain it before changing code.
 
 You are using **VS Code**, not Visual Studio. Windows compatibility has not been verified.
 
 ## What you will have at the end
 
 You will have one project folder open in VS Code. Inside that project, Codex and Claude Code can find the
-same six workflow skills. Nothing here changes your project code, your global agent settings, or your
-Git configuration.
+same six workflow skills. Discovery leaves project code alone. If writing is allowed, it saves a
+workflow record in `.ai-workflow/`; otherwise you get the overview in chat without a saved record.
 
 ## Three words used in this guide
 
@@ -28,25 +28,22 @@ Type this to check that Git is installed. It only prints the installed Git versi
 git --version
 ```
 
-If you do not have a project yet, make a small practice project. These commands create a folder, make it
-a local Git repository, and open that folder in VS Code:
+If you do not have a project yet, make a small private practice repository in the next step.
 
-```sh
-mkdir -p "$HOME/Developer/my-project"
-cd "$HOME/Developer/my-project"
-git init
-code .
-```
+## 2. Connect your project to GitHub
 
-`code .` is a VS Code convenience command. If it is unavailable, use **File > Open Folder** instead.
+The skills need a GitHub repository so the agent can see both your code and the work around it.
+If your project is already cloned from GitHub and open in VS Code, keep using that folder.
+Otherwise:
 
-## 2. Decide when you need GitHub
+1. Sign in to GitHub in your browser. For practice, create a **private** repository with a README.
+2. On its GitHub page, click **Code**, choose **HTTPS**, and copy the clone URL.
+3. In VS Code, press `Cmd+Shift+P`, choose **Git: Clone**, and paste that URL.
+4. Choose where to keep the project, sign in if prompted, then open the cloned folder.
 
-You do **not** need a GitHub account for the first local practice run. A local Git repository is enough
-to install the workflow and inspect it with discovery.
+For pictures of these steps, see [VS Code's repository guide](https://code.visualstudio.com/docs/sourcecontrol/repos-remotes).
 
-You need a GitHub connection later if you want to use GitHub branches, pull requests, and review. SSH is
-recommended. HTTPS with `gh auth` is an alternative.
+Git can connect through SSH (recommended) or HTTPS. Either works; SSH is not the only route.
 
 Before making a new SSH key, follow GitHub's
 [SSH setup guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh). If you need
@@ -59,6 +56,23 @@ ssh-keygen -t ed25519 -C "you@example.com"
 The private key stays on your Mac. Only the matching public key, normally `~/.ssh/id_ed25519.pub`, is
 added in GitHub under **Settings > SSH and GPG keys**. Never paste or upload a private key to GitHub, VS
 Code settings, a repository, a chat, or an issue.
+
+There is one separate connection for reading GitHub issues and pull requests: **GitHub CLI**, called
+`gh`. Install it using the instructions at [cli.github.com](https://cli.github.com/), then restart VS Code.
+Choose **Terminal > New Terminal** in your project and run:
+
+```sh
+gh auth login
+```
+
+Choose **GitHub.com** and browser sign-in; follow the prompts using your own GitHub account.
+Choose the protocol used to clone your project: HTTPS in step 2. Review any Git authentication or SSH
+key setup offer before accepting; it changes your local setup and is your choice.
+This signs in `gh`, not Codex or Claude Code. Check it without changing your sign-in:
+
+```sh
+gh auth status --active --hostname github.com
+```
 
 ## 3. Add the two AI helpers to VS Code
 
@@ -126,14 +140,27 @@ Check the installation without changing anything:
 
 ## 6. Start with discovery
 
-Open a Codex or Claude Code session in the project repository. Ask it to inspect before it changes
-anything:
+Open a new chat in the project repository and send only:
 
-> Use the ursa-discover skill to inspect this repository without changing files. Summarize its purpose,
-> current Git status, and the next safest task.
+- **Claude Code:** `/ursa-discover`
+- **Codex:** `$ursa-discover`, or choose it through `/skills`.
 
-Discovery reads the project first. In Claude Code, choose `/ursa-discover` and add the same request.
-In Codex, use `$ursa-discover` or choose it from the skill selector, then add the request.
+You do not need to name a task or supply technical IDs. The agent explains what the project is,
+what is happening on GitHub, what it could not check, and two or three sensible next steps.
+
+Codex needs network access to read GitHub. If it asks for permission for those reads, allow the scoped
+request. If it reports an invalid token, first ask it to check network access before signing in again.
+This is separate from your browser login. You do not need to grant unrestricted access.
+See [Codex permissions](https://learn.chatgpt.com/docs/sandboxing) for the approval controls.
+
+Project code is not changed. The agent saves its overview under `.ai-workflow/` when allowed.
+To try with no file writes at all, add “Do not write any files.” Repository rules may also forbid
+saving; then the overview stays in chat and cannot serve as a saved input to planning.
+
+Choose a task in ordinary language, such as “Investigate why progress is not saved.” The agent refreshes
+the facts for that task. If saving is not allowed, it tells you so; an unsaved task record cannot start
+planning. Allow the write and rerun discovery to save it. You do not copy hashes or IDs between chats:
+the next stage checks the saved records. Use a fresh, distinct reviewer session for each audit.
 
 When you are ready to make a change, use the skills in order:
 
@@ -150,7 +177,9 @@ When you are ready to make a change, use the skills in order:
 
 | Problem | What to do |
 | --- | --- |
-| `target is not a Git repository` | Open or create a Git repository, run `git init` if appropriate, then run the installer again. |
+| `target is not a Git repository` | [Clone your repository from GitHub](#2-connect-your-project-to-github), open that folder, then run the installer again. |
+| `gh` is not found | Install GitHub CLI and sign in as shown in [step 2](#2-connect-your-project-to-github), then restart VS Code. |
+| Discovery reports an invalid token or cannot reach GitHub | First check the client's network access as shown in [step 6](#6-start-with-discovery); sign in again only if authentication failure is confirmed. |
 | `Permission denied (publickey)` | Recheck GitHub's SSH guide and confirm that you added the `.pub` file, not the private key. |
 | `codex` or `claude` is not found | Finish the corresponding official setup, then open a new VS Code terminal. |
 | A skill command does not appear | Run `install.sh --check` from the target repository and restart the relevant client in that target. |

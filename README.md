@@ -56,12 +56,12 @@ to stop. Installation does not change your project code, Git configuration, exis
 
 If you are new to VS Code, GitHub, or coding agents, read the
 [first-time setup guide](docs/first-time-setup.md). It defines VS Code, a project repository, and the
-Extensions panel before asking you to type anything. It starts with a small local Git repository so you
-can practise safely.
+Extensions panel before asking you to type anything. Use your own GitHub project, or a small private
+practice repository, so you can try the workflow safely.
 
-The first local experiment does **not** need a GitHub account. You need a GitHub connection later when
-you want to use GitHub branches, pull requests, and review. SSH is recommended; HTTPS with `gh auth`
-is another option.
+The workflow needs a GitHub repository and the GitHub CLI (`gh`) signed in with `gh auth login`.
+SSH or HTTPS connects Git to your code; `gh` lets the agents read issues and pull requests too.
+Signing in to Codex or Claude Code is a separate step. The guide walks through all three connections.
 
 ## Quickstart
 
@@ -90,10 +90,17 @@ To confirm the installation later without changing anything, run this from your 
 "$HOME/.local/share/ursa/install.sh" --check
 ```
 
-Then open a Codex or Claude Code session in that project and begin with:
+Then open a new agent session in that project and send just the skill command:
 
-> Use the ursa-discover skill to inspect this repository without changing files. Summarize its purpose,
-> current Git status, and the next safest task.
+- **Claude Code:** `/ursa-discover`
+- **Codex:** `$ursa-discover`, or select the skill from `/skills`.
+
+No task description is needed yet. You get a project overview, current GitHub work, and two or three
+possible next steps. Choose one in ordinary language; the agents manage the technical records.
+Discovery does not change project code. When allowed, it saves its record under `.ai-workflow/`;
+if you or the repository forbid writes, it gives an unsaved overview instead.
+Codex may ask for network access to GitHub. Allow that scoped read so the agent can inspect issues
+and pull requests; a network restriction does not mean your GitHub login is broken.
 
 For detailed installation layout, validation, update, and removal procedures, see
 [Installation](docs/installation.md). For a complete example, see the
@@ -104,8 +111,8 @@ For detailed installation layout, validation, update, and removal procedures, se
 - Git.
 - A Git repository you own or are allowed to work in.
 - Codex and/or Claude Code, installed and signed in through each product's supported flow.
-- GitHub access only when cloning this repository while it remains private, or when you later use
-  GitHub branches, pull requests, and review.
+- A GitHub remote for your project, GitHub CLI installed, and `gh auth login` completed.
+- Permission for the agent to read GitHub over the network.
 
 The compatibility checks used Codex `0.153.4` and Claude Code `2.1.2` on macOS. They are tested
 configurations, not a claim that these are the only usable versions. Windows compatibility has not been

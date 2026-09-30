@@ -8,21 +8,36 @@ description: Independently review an implementation against its approved plan an
 Decide whether completed implementation bytes satisfy the bound plan without hidden scope, stale proof,
 or self-review. This stage reads and appends evidence; it does not edit product files.
 
-## Inputs
+## Managed inputs
 
-- The fixed `artifact_root`, plan revision/hash, and implementation revision/hash.
-- A code-auditor `actor_id` distinct from the implementer recorded in `implementation.md`.
-- The user-owned repository, planned base reference, changed inventory, and recorded check results.
+Use Git root; branch's tracked GitHub remote else sole GitHub remote; >1 ask before reads; never default to origin; github.com HTTPS/SSH; aliases BLOCK.
+No GitHub remotes: BLOCK; ask Code URL; no remotes: tell user `git remote add origin <URL>`; other remotes: give `git remote add <unused-name> <URL>`; rerun.
+Require `gh`, non-JSON `gh auth status --active --hostname github.com`, then `gh repo view owner/repo`.
+gh failure: probe `gh api --hostname github.com meta` here; network denial requests scoped access and retry; suggest login only for confirmed auth failure.
+Match saved root/repo and any named issue before work reads. Use explicit `--repo`/scoped API.
+Failed reads stop; never equate them with empty lists, read home SSH config, log in or alter remotes.
+Assign one runtime session ID, else a POSIX session token; record its source and authored stages.
+Keep it for this actor; model names, Git email and relabeling never establish an independent session.
+Select a user-chosen task: explicit intent or one eligible record for this repo/stage, never mtime.
+If absent/ambiguous, ask by task description; orientation is not task evidence. No user ID/hash input.
+Read producer-saved `<artifact>.ref`: relative path, revision/round, bare Git blob OID. Recompute hashes;
+check all task/root/repo/base/status/bindings. Missing/partial pairs stop; never manufacture refs.
+Legacy records need fresh producer passes/audits. Changed branch/HEAD/relevant bytes need context
+refresh; material drift invalidates approval. Preserve dirty work; ignore only this pass's outputs.
+Refresh relevant GitHub facts with explicit binding; no token display or secret/global-skill reads.
+Record extra fields: repository_root, github_repo, branch, checked_at, actor_source, session_authorship; hash fields are bare Git blob OIDs.
+Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
+This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
 ## Steps
 
-1. Read the bound `plan.md`, governing plan audit, and `implementation.md` from the supplied root.
-2. Recompute their hashes with `git hash-object`. Return `BLOCK` when identity, revision, binding,
-   base reference, or `COMPLETE` implementation status differs from the supplied values.
+1. Read bound discovery, plan, governing plan audit and implementation with their saved refs.
+2. Confirm identity, revisions, base and bindings; require COMPLETE implementation and latest plan PASS.
+   Invalid producer pairs or a later REVISE/BLOCK return BLOCK; never locate nearby substitutes.
 3. Compare auditor and implementer identities. Missing identity or self-review returns `BLOCK`; a new
    actor label does not make the implementation author independent.
 4. Choose the next unused positive code-audit round and reserve `code-audit-<round>.md`. Earlier audit
-   files remain immutable, including rounds whose findings were later fixed.
+   files remain immutable; later complete REVISE/BLOCK overrides PASS; never claim the older PASS governs.
 5. Re-read repository instructions and resolve the recorded base commit. Inspect current `git status`
    plus the complete diff from that base; never review only a selected patch supplied in prose.
 6. Compare every changed path and behavior with plan scope, decisions, sequencing, and exclusions.

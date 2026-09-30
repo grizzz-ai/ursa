@@ -9,6 +9,11 @@ If you are new to VS Code, GitHub, or coding agents, begin with
 [First-time setup](first-time-setup.md). This page is the technical reference for the installer and
 advanced lifecycle operations.
 
+Running the skills requires a project with a GitHub remote and an authenticated GitHub CLI (`gh`).
+Git transport through SSH or HTTPS does not sign in the API client: use `gh auth login` for issues,
+pull requests and milestones. Agent sign-in is separate. Codex may request scoped GitHub network access;
+check that access before treating an invalid-token message as a broken login.
+
 Clone the workflow once outside your consuming repositories, using the repository URL in the
 [README quickstart](../README.md#quickstart). The examples below assume that clone is stored at
 `$HOME/.local/share/ursa`.
@@ -45,6 +50,12 @@ Existing `AGENTS.md`, `CLAUDE.md`, unrelated skills, project files, hooks, and G
 user-owned and unchanged. GitHub authentication controls repository access only; authenticate Codex and
 Claude Code separately through their own supported sign-in flows.
 
+Start a fresh project chat with `/ursa-discover` in Claude Code or `$ursa-discover` in Codex
+(or its `/skills` selector). No task or technical identity input is required for orientation.
+Discovery leaves project code unchanged; when permitted it saves records and companion refs under
+`.ai-workflow/`. An explicit no-write request or repository restriction yields an unsaved overview,
+not a durable task handoff. Once you choose a task, later stages resolve its saved records themselves.
+
 ## Advanced per-skill lifecycle
 
 The recipes below install, validate, update, or remove one named skill. Use them when you deliberately
@@ -52,15 +63,17 @@ need per-skill lifecycle control; V1 does not provide bulk update or removal mod
 
 ## Prerequisites
 
-Only when the workflow source is a **private** GitHub repository, authenticate Git once:
+To run the workflow, install GitHub CLI and sign in using its supported browser flow:
 
 ```sh
-gh auth status
-gh auth setup-git
+gh auth login
+gh auth status --active --hostname github.com
 ```
 
-Public HTTPS clones do not require `gh auth`. GitHub access, Codex sign-in, and Claude Code sign-in
-are separate account flows.
+Downloading a public source over HTTPS does not require a GitHub account; running these skills does.
+For a private source, Git also needs access. Use SSH or, if choosing gh-managed HTTPS credentials,
+`gh auth setup-git`. It configures Git authentication and is an explicit operator action, not discovery.
+GitHub access, Codex sign-in, and Claude Code sign-in are separate account flows.
 
 Set a source repository, a full source commit, a skill name, and the consuming repository.
 `WORKFLOW_SOURCE` may be a local clone during verification.
