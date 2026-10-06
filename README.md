@@ -90,7 +90,8 @@ To confirm the installation later without changing anything, run this from your 
 "$HOME/.local/share/ursa/install.sh" --check
 ```
 
-Then open a new agent session in that project and send just the skill command:
+If VS Code was open during installation, quit and reopen it with your project folder. Then open a new
+agent chat in that project and send just the skill command:
 
 - **Claude Code:** `/ursa-discover`
 - **Codex:** `$ursa-discover`, or select the skill from `/skills`.

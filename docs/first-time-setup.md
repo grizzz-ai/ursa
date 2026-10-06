@@ -138,6 +138,9 @@ Check the installation without changing anything:
 "$HOME/.local/share/ursa/install.sh" --check
 ```
 
+If VS Code was open during installation, quit and reopen it with your project folder so the
+extensions can pick up the new skills.
+
 ## 6. Start with discovery
 
 Open a new chat in the project repository and send only:
