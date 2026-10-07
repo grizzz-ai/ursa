@@ -1,4 +1,4 @@
-# Ursa
+# Grizzz Ursa
 
 Use two AI coding agents on a real project without asking one of them to immediately change code and
 hoping for the best.
