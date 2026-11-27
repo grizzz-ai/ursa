@@ -29,6 +29,16 @@ Record extra fields: repository_root, github_repo, branch, checked_at, actor_sou
 Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
 This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Resolve the selected task root; read discovery, plan and governing plan audit with producer refs.
@@ -45,14 +55,32 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
    `REPLAN`; do not disguise scope growth as implementation detail.
 8. Run every planned local check directly and preserve command, exit status, and concise outcome.
    Record skipped or unavailable evidence with its consequence instead of treating it as passing.
-9. Inspect `git status` and the complete diff against the planned inventory. Separate pre-existing,
-   intended, generated, and unexpected paths; unexpected paths prevent `COMPLETE`.
+9. Inspect `git status`, full base diff AND explicitly enumerate the selected task root including
+   hidden/ignored entries before and after execution. Record exact paths, kinds, regular-file blobs,
+   producer/ref bindings and durable/disposable/pre-existing/shared/unknown classification; never
+   follow symlinks. Status alone is incomplete. Separate intended/generated/unexpected paths;
+   unexpected paths prevent COMPLETE. Preserve initial staged/dirty inventory.
 10. Set the implementation revision to one greater than the current `implementation.md`, or `1` when
     absent. Never overwrite an implementation record for a different task identity.
 11. Write `implementation.md` with fields: `task_key`, `artifact_root`, `actor_id`, `revision`,
     `plan_revision`, `plan_hash`, `plan_audit_round`, `plan_audit_hash`, `base_ref`, and `status`.
 12. Add Changes, Commands, Verification, Drift, Git state, Risks, and Handoff sections. Name the exact
     recipient and effect for the terminal state, then hash the saved file with `git hash-object`.
+
+## Scratch creation receipts
+
+Only this stage produces new scratch ownership receipts. For necessary planned command logs or
+regenerable intermediates, use `.ai-workflow/<task_key>/scratch/<actor-or-session>/<operation>/`.
+Before creation, bind task/actor/command and verify fresh absent path, contained real parents and no
+symlink/special file; create without clobbering. Do not add unnecessary commands to manufacture logs.
+After actual execution, hash each resulting regular file with git hash-object; save scratch_inventory
+inside implementation.md before its ref: path, task_key, creator_actor_id, command, command_exit,
+before_state: absent, blob, role, retention: disposable|required-evidence. Record observed leftovers
+in PARTIAL implementation after failure; missing/incomplete receipt protects the files. Preserve
+original creation bindings in later revisions; changed bytes need actual producer observation.
+Logs are disposable only after completion and distinct review confirms durable summaries/results
+suffice; raw payload dependencies override that classification. Old/unreceipted logs/backups and all
+producer/audit/archive revisions remain durable/unknown. Never retroactively invent provenance.
 
 ## Output
 

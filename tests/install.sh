@@ -4,7 +4,7 @@ set -eu
 
 ROOT=$(CDPATH='' cd "$(dirname "$0")/.." && pwd -P)
 INSTALLER=$ROOT/install.sh
-SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff ursa-create-issue ursa-close-issue"
+SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff ursa-create-issue ursa-close-issue ursa-maintain"
 TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/workflow-install-test.XXXXXX")
 trap 'chmod -R u+w "$TMP_ROOT" 2>/dev/null || true; rm -R "$TMP_ROOT"' EXIT HUP INT TERM
 
@@ -18,6 +18,7 @@ new_repo() {
   mkdir -p "$repo"
   git -C "$repo" init -q
   printf 'fixture\n' > "$repo/fixture.txt"
+  printf '# retained rules\ncache/\n!cache/keep.txt\n' > "$repo/.gitignore"
 }
 
 run_fail() {
@@ -47,9 +48,11 @@ assert_installed() {
 test_current_repository_install() {
   target=$TMP_ROOT/current
   new_repo "$target"
+  ignore_before=$(git -C "$target" hash-object .gitignore)
   (cd "$target" && "$INSTALLER") >/dev/null
   assert_installed "$target"
   (cd "$target" && "$INSTALLER" --check) >/dev/null
+  [ "$(git -C "$target" hash-object .gitignore)" = "$ignore_before" ] || fail "install/check changed ignore bytes"
 }
 
 test_explicit_target_preserves_user_files() {
@@ -60,12 +63,15 @@ test_explicit_target_preserves_user_files() {
   printf 'agents\n' > "$target/AGENTS.md"
   printf 'claude\n' > "$target/CLAUDE.md"
   printf 'unrelated\n' > "$target/.agents/skills/unrelated/SKILL.md"
-  before=$(git -C "$target" hash-object AGENTS.md CLAUDE.md .agents/skills/unrelated/SKILL.md)
+  printf '# user rules\ncache/\n!cache/keep.txt\n' > "$target/.gitignore"
+  before=$(git -C "$target" hash-object AGENTS.md CLAUDE.md .gitignore .agents/skills/unrelated/SKILL.md)
   (cd "$outside" && "$INSTALLER" --target "$target") >/dev/null
-  after=$(git -C "$target" hash-object AGENTS.md CLAUDE.md .agents/skills/unrelated/SKILL.md)
+  after=$(git -C "$target" hash-object AGENTS.md CLAUDE.md .gitignore .agents/skills/unrelated/SKILL.md)
   [ "$before" = "$after" ] || fail "user-owned files changed"
   assert_installed "$target"
   "$INSTALLER" --check --target "$target" >/dev/null
+  after=$(git -C "$target" hash-object AGENTS.md CLAUDE.md .gitignore .agents/skills/unrelated/SKILL.md)
+  [ "$before" = "$after" ] || fail "check changed user-owned bytes"
 }
 
 test_invalid_invocations_refuse() {
@@ -83,7 +89,7 @@ snapshot_target() {
 }
 
 test_occupied_destinations_refuse_before_write() {
-  for skill in ursa-discover ursa-plan ursa-create-issue ursa-close-issue; do
+  for skill in ursa-discover ursa-plan ursa-create-issue ursa-close-issue ursa-maintain; do
     for kind in canonical link partial; do
       target=$TMP_ROOT/occupied-$skill-$kind
       new_repo "$target"
@@ -115,7 +121,7 @@ test_late_link_failure_rolls_back() {
 }
 
 test_check_rejects_mutations() {
-  for skill in ursa-discover ursa-create-issue ursa-close-issue; do
+  for skill in ursa-discover ursa-create-issue ursa-close-issue ursa-maintain; do
     for kind in file link metadata; do
       target=$TMP_ROOT/mutated-$skill-$kind
       new_repo "$target"
@@ -149,7 +155,7 @@ done
 exec "$URSA_TEST_REAL_LN" "$@"
 SH
   chmod +x "$fault_bin/ln"
-  for skill in ursa-create-issue ursa-close-issue; do
+  for skill in ursa-create-issue ursa-close-issue ursa-maintain; do
     target=$TMP_ROOT/late-failure-$skill
     new_repo "$target"
     before=$(snapshot_target)

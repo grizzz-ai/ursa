@@ -8,7 +8,7 @@ You are using **VS Code**, not Visual Studio. Windows compatibility has not been
 ## What you will have at the end
 
 You will have one project folder open in VS Code. Inside that project, Codex and Claude Code can find the
-same eight workflow skills. Discovery leaves project code alone. If writing is allowed, it saves a
+same nine workflow skills. Discovery leaves project code alone. If writing is allowed, it saves a
 workflow record in `.ai-workflow/`; otherwise you get the overview in chat without a saved record.
 
 ## Three words used in this guide
@@ -129,7 +129,7 @@ project, not into the workflow clone:
 "$HOME/.local/share/ursa/install.sh"
 ```
 
-The installer creates eight canonical files under `.agents/skills/` and eight relative links under
+The installer creates nine canonical files under `.agents/skills/` and nine relative links under
 `.claude/skills/`. Both Codex and Claude Code then use the same local skill bodies.
 
 Check the installation without changing anything:
@@ -203,3 +203,10 @@ explains this before you choose. You can instead select task evidence at closure
 For technical installer details, per-skill lifecycle operations, and safe removal, see
 [Installation](installation.md). For problems with this guide, open a
 [GitHub issue](https://github.com/grizzz-ai/ursa/issues).
+
+## Keep task records manageable
+
+After choosing a task, ask `ursa-maintain` for an inventory. It previews a shared ignore rule before
+changing it; the rule reaches teammates only through your normal reviewed delivery. After completion,
+archive preserves evidence in place. Resume and cleanup are separate decisions. Do not run generic Git
+clean commands on ignored records. See [Task artifact lifecycle](task-artifact-lifecycle.md).

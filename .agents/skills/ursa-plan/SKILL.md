@@ -29,6 +29,16 @@ Record extra fields: repository_root, github_repo, branch, checked_at, actor_sou
 Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
 This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Require a chosen intent. If only an overview exists, ask for a task; obtain fresh task discovery.
@@ -43,15 +53,30 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
    If such a choice lacks an owner or answer, produce a blocked plan rather than guessing.
 8. Describe the current flow using inspected paths and references, then define the minimal change shape.
 9. Give ordered implementation steps. Each step must name its target and the evidence it should leave.
+   Apply the scratch planning boundary below when command logs are necessary.
 10. Define realistic checks before implementation: local tests, integration behavior, external effects,
     and clear rule-outs for layers that do not apply. A passing command must have a falsifiable meaning.
 11. Record concrete failure modes, recovery or rollback, dependencies, and authorization boundaries.
 12. Set `revision` to one greater than the current `plan.md` revision, or `1` when no plan exists.
+    Before replacing an existing plan/ref, validate and preserve BOTH files byte-for-byte in
+    revision-scoped history with their original canonical-path context. Re-read both saved copies,
+    compare their bytes and the old plan blob/ref binding, and only then touch the current pair.
+    An identical verified snapshot may be reused; never overwrite a conflicting one. A missing
+    copy, failed save or broken referenced history means BLOCK with the current pair untouched.
+    A copied ref alone is not preserved history; never recreate missing producer bytes from a claim.
 13. Write `plan.md` with fields: `task_key`, `artifact_root`, `actor_id`, `revision`,
     `discovery_revision`, `discovery_hash`, `base_ref`, and `status`.
 14. Include sections named Goal, Current facts, Scope, Decisions, Steps, Verification, Risks, Recovery,
     Dependencies, Missing facts, and Handoff. Do not edit product files while planning.
 15. Hash the saved plan with `git hash-object <artifact_root>/plan.md` and report the revision and hash.
+
+## Scratch planning boundary
+
+For necessary planned logs, name the command, task-relative
+`scratch/<implementer-actor-or-session>/<operation>/` path pattern and planned retention class.
+Read `ursa-implement` for creation, containment, no-clobber and receipt requirements; that stage
+owns execution mechanics and actual scratch provenance. Do not duplicate its shell procedure here.
+Derive expected blobs from actual inspected bytes, never guessed hashes.
 
 ## Output
 

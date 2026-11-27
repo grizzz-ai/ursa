@@ -1,9 +1,9 @@
 # Repository-local installation
 
-The repository-root installer adds the complete eight-skill package to one user-owned Git repository.
+The repository-root installer adds the complete nine-skill package to one user-owned Git repository.
 It never writes to global Codex or Claude Code configuration.
 
-## Install all eight skills
+## Install all nine skills
 
 If you are new to VS Code, GitHub, or coding agents, begin with
 [First-time setup](first-time-setup.md). This page is the technical reference for the installer and
@@ -30,7 +30,7 @@ The no-argument form resolves the current Git root. To select a repository from 
 "$HOME/.local/share/ursa/install.sh" --target /path/to/project
 ```
 
-The fixed manifest installs `ursa-discover`, `ursa-plan`, `ursa-plan-audit`, `ursa-implement`, `ursa-code-audit`, `ursa-handoff`, `ursa-create-issue`, and `ursa-close-issue`.
+The fixed manifest installs `ursa-discover`, `ursa-plan`, `ursa-plan-audit`, `ursa-implement`, `ursa-code-audit`, `ursa-handoff`, `ursa-create-issue`, `ursa-close-issue`, and `ursa-maintain`.
 Each canonical body is copied to `.agents/skills/<name>/SKILL.md`; each
 `.claude/skills/<name>` entry is a relative link to that canonical repository-local directory. The
 source-only `.agents/skills/README.md` is deliberately not copied into consuming repositories.
@@ -58,18 +58,22 @@ not a durable task handoff. Once you choose a task, later stages resolve its sav
 
 ## Issue skills and existing installations
 
-The eight-skill package includes two optional GitHub issue skills alongside the six coding stages.
+The nine-skill package includes two optional GitHub issue skills and task maintenance alongside the six coding stages.
 Creation accepts ordinary text without a saved task; closure needs acceptance and delivered evidence.
 Each GitHub write is previewed and separately authorized. Only discovery writes a task's issue_url;
 association after planning requires fresh planning/audits, and is never an automatic install effect.
 
-An older six-skill installation is not bulk-upgraded by rerunning the installer: occupied destinations
+An older six- or eight-skill installation is not bulk-upgraded by rerunning the installer: occupied destinations
 still refuse. Use the reviewed per-skill lifecycle below for each affected skill at one chosen source
-commit, including the two new skills. Preserve user files and validate the complete eight-skill set
+commit, including maintenance and any missing issue skills. Preserve user files and validate the complete nine-skill set
 with --check against that source after all per-skill updates are complete.
 
 See [Issue lifecycle verification](issue-lifecycle-verification.md) for the behavioral checks; --check
 validates installed bytes and links, not agent compliance or GitHub issue behavior.
+
+Use `ursa-maintain` for a reviewed shared ignore rule, archive/resume or verified scratch cleanup.
+The installer never changes consumer ignore rules or cleans task records. See
+[Task artifact lifecycle](task-artifact-lifecycle.md) for distinct previews and recovery.
 
 ## Advanced per-skill lifecycle
 

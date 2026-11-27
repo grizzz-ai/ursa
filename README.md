@@ -47,7 +47,7 @@ flowchart LR
   CA --> H[Handoff: human decision]
 ```
 
-The eight skills are short workflow instructions, not a second application you must learn. The installer
+The nine skills are short workflow instructions, not a second application you must learn. The installer
 and its tests are real scripts in this repository; the skills tell the agents when to use them and when
 to stop. Installation does not change your project code, Git configuration, existing `AGENTS.md` or
 `CLAUDE.md`, or global agent settings.
@@ -81,7 +81,7 @@ repository's VS Code terminal, run:
 "$HOME/.local/share/ursa/install.sh"
 ```
 
-The installer copies the eight workflow skill files into your selected project and creates local Claude
+The installer copies the nine workflow skill files into your selected project and creates local Claude
 Code links to the same files. It records where they came from and checks the result.
 
 To confirm the installation later without changing anything, run this from your project repository:
@@ -123,6 +123,14 @@ silently close the issue. Neither discovery nor an audit writes to GitHub issues
 
 For maintainer validation, see [Issue lifecycle verification](docs/issue-lifecycle-verification.md).
 
+## Task artifacts after delivery
+
+Use `ursa-maintain` to see what is retained, ignored, archived or eligible for cleanup. It can preview
+a shared `.gitignore` rule and archive completed evidence in place. Each change needs its own choice;
+ignoring retains files and does not reclaim disk space. Cleanup is limited to proven disposable scratch.
+Active/deferred tasks, shared evidence and user files are protected. Nothing runs automatically at merge.
+See [Task artifact lifecycle](docs/task-artifact-lifecycle.md) for archive, resume and recovery.
+
 ## What you need
 
 - Git.
@@ -138,7 +146,7 @@ verified.
 ## Repository layout
 
 ```text
-.agents/skills/     Canonical source for the eight workflow skills
+.agents/skills/     Canonical source for the nine workflow skills
 .github/            Issue and pull-request intake templates
 CONTRIBUTING.md     Contribution guidance
 docs/               Beginner and technical installation guides

@@ -2,7 +2,7 @@
 
 set -eu
 
-SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff ursa-create-issue ursa-close-issue"
+SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff ursa-create-issue ursa-close-issue ursa-maintain"
 MODE=install
 TARGET_INPUT=
 SEEN_MODE=0
@@ -82,7 +82,7 @@ validate_installation() {
 
 if [ "$MODE" = check ]; then
   validate_installation || fail "installation validation failed"
-  printf 'valid: eight workflow skills at %s\n' "$SOURCE_REF"
+  printf 'valid: nine workflow skills at %s\n' "$SOURCE_REF"
   exit 0
 fi
 
@@ -143,4 +143,4 @@ done
 
 validate_installation || fail "post-install validation failed"
 COMMITTED=1
-printf 'installed: eight workflow skills at %s\n' "$SOURCE_REF"
+printf 'installed: nine workflow skills at %s\n' "$SOURCE_REF"
