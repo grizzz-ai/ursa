@@ -8,7 +8,7 @@ You are using **VS Code**, not Visual Studio. Windows compatibility has not been
 ## What you will have at the end
 
 You will have one project folder open in VS Code. Inside that project, Codex and Claude Code can find the
-same six workflow skills. Discovery leaves project code alone. If writing is allowed, it saves a
+same eight workflow skills. Discovery leaves project code alone. If writing is allowed, it saves a
 workflow record in `.ai-workflow/`; otherwise you get the overview in chat without a saved record.
 
 ## Three words used in this guide
@@ -129,7 +129,7 @@ project, not into the workflow clone:
 "$HOME/.local/share/ursa/install.sh"
 ```
 
-The installer creates six canonical files under `.agents/skills/` and six relative links under
+The installer creates eight canonical files under `.agents/skills/` and eight relative links under
 `.claude/skills/`. Both Codex and Claude Code then use the same local skill bodies.
 
 Check the installation without changing anything:
@@ -175,6 +175,19 @@ When you are ready to make a change, use the skills in order:
 | `ursa-implement` | Make the approved change. |
 | `ursa-code-audit` | Have a distinct reviewer check the completed diff. |
 | `ursa-handoff` | Record evidence and leave the next decision to a human. |
+
+## Optional: create and close a GitHub issue
+
+Ask `ursa-create-issue` to turn your chosen task or ordinary request into an issue. It searches for
+existing work and shows the exact draft before asking permission to create it. You may decline or
+reuse an existing issue. The coding stages also work without issues.
+
+After delivery, `ursa-close-issue` explains which criteria are met and what remains missing. It leaves
+local-only or incomplete work open. Closing, or posting one progress comment, needs its own approval.
+A default `Refs` PR link keeps the issue open after merge for that explicit decision.
+
+Adding an issue to saved discovery after planning requires fresh planning and audits; the agent
+explains this before you choose. You can instead select task evidence at closure without saving a link.
 
 ## Troubleshooting
 

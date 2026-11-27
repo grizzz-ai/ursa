@@ -1,9 +1,9 @@
 # Repository-local installation
 
-The repository-root installer adds the complete six-skill workflow to one user-owned Git repository.
+The repository-root installer adds the complete eight-skill package to one user-owned Git repository.
 It never writes to global Codex or Claude Code configuration.
 
-## Install all six skills
+## Install all eight skills
 
 If you are new to VS Code, GitHub, or coding agents, begin with
 [First-time setup](first-time-setup.md). This page is the technical reference for the installer and
@@ -30,7 +30,7 @@ The no-argument form resolves the current Git root. To select a repository from 
 "$HOME/.local/share/ursa/install.sh" --target /path/to/project
 ```
 
-The fixed manifest installs `ursa-discover`, `ursa-plan`, `ursa-plan-audit`, `ursa-implement`, `ursa-code-audit`, and `ursa-handoff`.
+The fixed manifest installs `ursa-discover`, `ursa-plan`, `ursa-plan-audit`, `ursa-implement`, `ursa-code-audit`, `ursa-handoff`, `ursa-create-issue`, and `ursa-close-issue`.
 Each canonical body is copied to `.agents/skills/<name>/SKILL.md`; each
 `.claude/skills/<name>` entry is a relative link to that canonical repository-local directory. The
 source-only `.agents/skills/README.md` is deliberately not copied into consuming repositories.
@@ -55,6 +55,21 @@ Start a fresh project chat with `/ursa-discover` in Claude Code or `$ursa-discov
 Discovery leaves project code unchanged; when permitted it saves records and companion refs under
 `.ai-workflow/`. An explicit no-write request or repository restriction yields an unsaved overview,
 not a durable task handoff. Once you choose a task, later stages resolve its saved records themselves.
+
+## Issue skills and existing installations
+
+The eight-skill package includes two optional GitHub issue skills alongside the six coding stages.
+Creation accepts ordinary text without a saved task; closure needs acceptance and delivered evidence.
+Each GitHub write is previewed and separately authorized. Only discovery writes a task's issue_url;
+association after planning requires fresh planning/audits, and is never an automatic install effect.
+
+An older six-skill installation is not bulk-upgraded by rerunning the installer: occupied destinations
+still refuse. Use the reviewed per-skill lifecycle below for each affected skill at one chosen source
+commit, including the two new skills. Preserve user files and validate the complete eight-skill set
+with --check against that source after all per-skill updates are complete.
+
+See [Issue lifecycle verification](issue-lifecycle-verification.md) for the behavioral checks; --check
+validates installed bytes and links, not agent compliance or GitHub issue behavior.
 
 ## Advanced per-skill lifecycle
 

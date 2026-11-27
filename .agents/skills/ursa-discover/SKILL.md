@@ -49,15 +49,28 @@ These checks provide no attestation, tamper-proof storage, locking or transactio
    a trailing newline via `git hash-object --stdin` as `intent_hash`.
 8. Derive one lowercase letters/digits/hyphens `task_key` and `.ai-workflow/<task_key>/` root.
    Existing discovery must match root/key/intent/repo; incomplete or different identity BLOCK.
+   Only this skill writes issue_url and discovery/ref. Verify the user-selected issue belongs to the
+   repository. New issue-free tasks use null. Existing records retain their issue_url unless a
+   verified association is explicitly chosen. A conflicting non-null URL stops writes: offer to keep
+   the existing task/association unchanged or select a separate task for the other issue. A new
+   intent requires a new task_key/root; never delete prior artifacts, combine URLs in issue_url,
+   retarget an existing non-null association, or change intent_hash under the old identity.
+   Adding an association for the same intent preserves task_key, root and intent_hash but creates
+   a fresh discovery revision/ref. Before association after planning, disclose that its new hash
+   invalidates dependent plans/audits and requires re-plan/re-audit; never edit those records.
+   A changed intent cannot reuse this identity. Legacy/missing pairs need fresh producer work.
 9. Write `discovery.md`, incrementing its revision; never replace another intent's records.
    Fields: `task_key`, `artifact_root`, `actor_id`, `revision`, `intent_hash`, `repository_root`,
    `branch`, `base_ref`, `status: READY|BLOCK`, `mode: task`, `github_repo`, `checked_at`,
-   `actor_source`, `session_authorship`. Only task discovery with READY may feed planning.
+   `actor_source`, `session_authorship`, `issue_url` (verified canonical GitHub issue URL or null).
+   Only task discovery with READY may feed planning.
 10. Include instructions, paths/command evidence, constraints, dirty/related work, cited facts,
     interpretations, gaps and planning input. Hash the saved artifact and save its companion ref.
 11. Keep snapshots current: changed branch/HEAD/relevant bytes require refreshed context; material
     drift invalidates approval. Distinguish this pass's outputs from pre-existing dirty work.
 12. Resolve artifact collisions before writing; never overwrite another intent or completed audit.
+13. If the user wants a tracked issue, offer ursa-create-issue with the task description; do not create
+    it from discovery. A returned URL may be associated only through the explicit procedure above.
 
 ## Output
 

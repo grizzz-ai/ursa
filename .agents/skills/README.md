@@ -1,6 +1,6 @@
 # Canonical skills
 
-This directory is the single source for the six workflow skill bodies:
+This directory is the single source for the eight workflow skill bodies:
 
 - `ursa-discover`
 - `ursa-plan`
@@ -8,6 +8,8 @@ This directory is the single source for the six workflow skill bodies:
 - `ursa-implement`
 - `ursa-code-audit`
 - `ursa-handoff`
+- `ursa-create-issue`
+- `ursa-close-issue`
 
 Start with `ursa-discover` in the user's GitHub project. With no task, it explains the project,
 current work and possible next steps. After the user chooses a task, discovery grounds that task
@@ -30,3 +32,9 @@ A no-write request leaves an unsaved overview and no durable handoff; project fi
 These are agent instructions, not tamper-proof records, identity attestation or executable enforcement.
 
 Commit, push, pull-request creation, merge, deployment and publication remain separate operator decisions.
+
+Issues are optional: ursa-create-issue accepts an ordinary request and previews each GitHub write.
+Only ursa-discover persists optional issue_url associations in task evidence. Associating after
+planning requires fresh planning/audits; close-time evidence can instead be selected without a link.
+ursa-close-issue checks criteria and delivery before separately authorized closure or one comment.
+Handoff defaults to non-closing Refs links so merge does not silently bypass that decision.

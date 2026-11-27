@@ -4,7 +4,7 @@ set -eu
 
 ROOT=$(CDPATH='' cd "$(dirname "$0")/.." && pwd -P)
 INSTALLER=$ROOT/install.sh
-SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff"
+SKILLS="ursa-discover ursa-plan ursa-plan-audit ursa-implement ursa-code-audit ursa-handoff ursa-create-issue ursa-close-issue"
 TMP_ROOT=$(mktemp -d "${TMPDIR:-/tmp}/workflow-install-test.XXXXXX")
 trap 'chmod -R u+w "$TMP_ROOT" 2>/dev/null || true; rm -R "$TMP_ROOT"' EXIT HUP INT TERM
 
@@ -78,18 +78,25 @@ test_invalid_invocations_refuse() {
   [ ! -e "$target/.agents" ] || fail "invalid invocation mutated target"
 }
 
+snapshot_target() {
+  find "$target" -path "$target/.git" -prune -o -type f -exec cksum {} \; -o -type l -exec ls -ld {} \; -o -type d -print
+}
+
 test_occupied_destinations_refuse_before_write() {
-  for kind in canonical link partial; do
-    target=$TMP_ROOT/occupied-$kind
-    new_repo "$target"
-    case "$kind" in
-      canonical) mkdir -p "$target/.agents/skills/ursa-discover" ;;
-      link) mkdir -p "$target/.claude/skills"; ln -s elsewhere "$target/.claude/skills/ursa-discover" ;;
-      partial) mkdir -p "$target/.agents/skills/ursa-plan"; printf 'existing\n' > "$target/.agents/skills/ursa-plan/SKILL.md" ;;
-    esac
-    run_fail "$INSTALLER" --target "$target"
-    [ ! -e "$target/.agents/skills/ursa-handoff" ] || fail "occupied target was partially installed: $kind"
-    [ ! -e "$target/.claude/skills/ursa-handoff" ] || fail "occupied target gained links: $kind"
+  for skill in ursa-discover ursa-plan ursa-create-issue ursa-close-issue; do
+    for kind in canonical link partial; do
+      target=$TMP_ROOT/occupied-$skill-$kind
+      new_repo "$target"
+      case "$kind" in
+        canonical) mkdir -p "$target/.agents/skills/$skill" ;;
+        link) mkdir -p "$target/.claude/skills"; ln -s elsewhere "$target/.claude/skills/$skill" ;;
+        partial) mkdir -p "$target/.agents/skills/$skill"; printf 'existing\n' > "$target/.agents/skills/$skill/SKILL.md" ;;
+      esac
+      before=$(snapshot_target)
+      run_fail "$INSTALLER" --target "$target"
+      after=$(snapshot_target)
+      [ "$before" = "$after" ] || fail "occupied target changed: $skill/$kind"
+    done
   done
 }
 
@@ -108,16 +115,49 @@ test_late_link_failure_rolls_back() {
 }
 
 test_check_rejects_mutations() {
-  for kind in file link metadata; do
-    target=$TMP_ROOT/mutated-$kind
+  for skill in ursa-discover ursa-create-issue ursa-close-issue; do
+    for kind in file link metadata; do
+      target=$TMP_ROOT/mutated-$skill-$kind
+      new_repo "$target"
+      "$INSTALLER" --target "$target" >/dev/null
+      case "$kind" in
+        file) printf '\nchanged\n' >> "$target/.agents/skills/$skill/SKILL.md" ;;
+        link) rm "$target/.claude/skills/$skill"; ln -s wrong "$target/.claude/skills/$skill" ;;
+        metadata) printf 'ref=wrong\nhash=wrong\n' > "$target/.agents/skills/$skill/.ursa-origin" ;;
+      esac
+      before=$(snapshot_target)
+      run_fail "$INSTALLER" --check --target "$target"
+      after=$(snapshot_target)
+      [ "$before" = "$after" ] || fail "check mutated corrupted install: $skill/$kind"
+    done
+  done
+}
+
+test_new_skill_link_failure_rolls_back() {
+  real_ln=$(command -v ln)
+  fault_bin=$TMP_ROOT/fault-bin
+  mkdir "$fault_bin"
+  cat > "$fault_bin/ln" <<'SH'
+#!/bin/sh
+for arg do
+  case "$arg" in
+    */.claude/skills/"$URSA_TEST_FAIL_SKILL")
+      printf '%s\n' "$arg" > "$URSA_TEST_FAILURE_RECEIPT"
+      exit 1 ;;
+  esac
+done
+exec "$URSA_TEST_REAL_LN" "$@"
+SH
+  chmod +x "$fault_bin/ln"
+  for skill in ursa-create-issue ursa-close-issue; do
+    target=$TMP_ROOT/late-failure-$skill
     new_repo "$target"
-    "$INSTALLER" --target "$target" >/dev/null
-    case "$kind" in
-      file) printf '\nchanged\n' >> "$target/.agents/skills/ursa-discover/SKILL.md" ;;
-      link) rm "$target/.claude/skills/ursa-discover"; ln -s wrong "$target/.claude/skills/ursa-discover" ;;
-      metadata) printf 'ref=wrong\nhash=wrong\n' > "$target/.agents/skills/ursa-discover/.ursa-origin" ;;
-    esac
-    run_fail "$INSTALLER" --check --target "$target"
+    before=$(snapshot_target)
+    # Replace only link creation at a named new skill; exercise the real installer's rollback.
+    run_fail env PATH="$fault_bin:$PATH" URSA_TEST_REAL_LN="$real_ln" URSA_TEST_FAIL_SKILL="$skill" URSA_TEST_FAILURE_RECEIPT="$TMP_ROOT/failure-$skill" "$INSTALLER" --target "$target"
+    after=$(snapshot_target)
+    [ "$(cat "$TMP_ROOT/failure-$skill")" = "$(git -C "$target" rev-parse --show-toplevel)/.claude/skills/$skill" ] || fail "wrong injected failure: $skill"
+    [ "$before" = "$after" ] || fail "late failure left residue: $skill"
   done
 }
 
@@ -158,6 +198,7 @@ test_explicit_target_preserves_user_files
 test_invalid_invocations_refuse
 test_occupied_destinations_refuse_before_write
 test_late_link_failure_rolls_back
+test_new_skill_link_failure_rolls_back
 test_check_rejects_mutations
 test_rerun_refuses_completed_install
 test_dirty_source_refuses_before_target_write
