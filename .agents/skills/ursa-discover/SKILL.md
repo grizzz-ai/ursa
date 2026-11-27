@@ -31,6 +31,16 @@ Save artifact then .ref (relative path, revision/round, bare Git blob OID); all 
 Missing pairs need fresh producer passes, not fabricated refs; detected competing passes BLOCK.
 These checks provide no attestation, tamper-proof storage, locking or transaction guarantees.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Snapshot branch, HEAD, dirty state, last ten commits and remotes; separate facts from interpretation.
@@ -69,6 +79,8 @@ These checks provide no attestation, tamper-proof storage, locking or transactio
 11. Keep snapshots current: changed branch/HEAD/relevant bytes require refreshed context; material
     drift invalidates approval. Distinguish this pass's outputs from pre-existing dirty work.
 12. Resolve artifact collisions before writing; never overwrite another intent or completed audit.
+    Same-intent ARCHIVED task: offer explicit resume via ursa-maintain, or a new task only for a
+    distinct user-chosen intent. Never replace/reuse the archived identity silently.
 13. If the user wants a tracked issue, offer ursa-create-issue with the task description; do not create
     it from discovery. A returned URL may be associated only through the explicit procedure above.
 

@@ -32,6 +32,16 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
 - An artifact disposition decision: `track`, `local`, or `pending`.
 - Separate operator decisions for commit, push, and pull-request creation as each boundary is reached.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Read discovery, plan, governing plan audit, implementation and code audit with saved refs.
@@ -42,6 +52,9 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
    Any byte or path drift since audit returns `BLOCK` and routes back to implementation review.
 4. Apply artifact disposition before delivery. `track` includes workflow artifacts in reviewed scope;
    `local` keeps them outside the commit; `pending` records the unresolved owner and returns `BLOCK`.
+   Enumerate ignored/hidden task entries explicitly; compare each intended path/blob to the independent
+   audit's exact admitted track list. New/changed/unreviewed handoff or maintenance outputs stay
+   explicitly local or need independent review before tracking. Show retained-local and tracked lists.
 5. Create or revise `handoff.md` with fields: `task_key`, `artifact_root`, `actor_id`, `revision`,
    `plan_revision`, `plan_hash`, `implementation_revision`, `implementation_hash`, `code_audit_round`,
    `code_audit_hash`, `base_ref`, `disposition`, and `status`.
@@ -55,8 +68,10 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
    explicit operator choice for that exact auto-close effect, previewing its bypass of the later
    close-skill decision; otherwise stop until a non-closing form is chosen. Delivery/merge consent
    alone never authorizes auto-close. On authorized commit, stage only the reviewed inventory
-   permitted by disposition, inspect the staged
-   diff, create one repository-conforming commit, and record its exact SHA and resulting Git state.
+   permitted by disposition. For ignored records, preview and deliberately force-add only exact
+   unchanged independently admitted paths under the track AND commit approvals, never a directory
+   sweep. Recheck staged path/blob set against that list and initial index; inspect the staged diff,
+   create one repository-conforming commit, and record its exact SHA and resulting Git state.
 9. Ask for a separate push decision bound to that commit SHA. Push only `authorized`; `declined` or
    `not-yet-authorized` leaves the remote unchanged, sets `BLOCK`, and ends truthfully.
 10. After an authorized push, ask separately whether to create a pull request for the pushed branch.
@@ -90,3 +105,6 @@ and needs separate write approval. A PR alone is not delivery, and a merge alone
 Never close or comment on an issue implicitly. If no PR exists, report the last completed boundary
 and preserved state. Never merge; a later
 review and explicit merge decision own that action.
+
+After independently verified completion, offer ursa-maintain inventory; never run ignore/archive/cleanup
+automatically or infer their consent from disposition, delivery or issue closure.

@@ -1,6 +1,6 @@
 # Verify the issue lifecycle
 
-This reusable maintainer procedure checks the installed eight-skill package and real agent behavior.
+This reusable maintainer procedure checks the installed nine-skill package and real agent behavior.
 Keep run-specific results outside this guide. Instruction review is not proof of agent compliance.
 
 ## Prepare a disposable environment
@@ -8,12 +8,12 @@ Keep run-specific results outside this guide. Instruction review is not proof of
 1. Use a repository whose owner explicitly approves the test target and exact GitHub effects.
    Never test on production work. Creation, comments, closure, fixture PR push and merge need their
    own scoped authority. Confirm capacity/authorization before any paid client runs.
-2. Retain a temporary candidate source with the actual eight skill bodies tracked in a local fixture
+2. Retain a temporary candidate source with the actual nine skill bodies tracked in a local fixture
    commit. Record its commit, tree and skill blob IDs. Do not weaken the installer's dirty-source
    check or claim that tests of an older HEAD prove the edited package. Fixture commits are not
    delivery commits. Do not push this fixture source implicitly.
 3. Install into a fresh Git consumer, and run install.sh --check against that exact source. Record
-   source identity, all eight bodies, origins and relative Claude links. Do not overwrite an existing
+   source identity, all nine bodies, origins and relative Claude links. Do not overwrite an existing
    install. Use the documented reviewed per-skill lifecycle for an existing consumer.
 4. Use fresh Codex and Claude Code sessions separately. Record the exact launcher/executable path,
    actual version, supported invocation and evidence that each installed skill was loaded. An alias
@@ -30,7 +30,7 @@ sh -n install.sh tests/install.sh
 sh tests/install.sh
 ```
 
-The suite exercises the actual installer: exact eight-body inventory, origin hashes and links,
+The suite exercises the actual installer: exact nine-body inventory, origin hashes and links,
 occupied targets (including both new skills), corrupted bodies/links/origins, preservation, dirty
 source, rerun refusal and rollback. The late-link tests replace only ln in that test subprocess to
 fail at each new skill; they do not fake installer rollback. These are controlled local integration
@@ -88,3 +88,6 @@ installer tests cannot replace it. Unavailable access/client/authority keeps ver
 This procedure authorizes no writes by itself. Do not upgrade clients, bypass permissions, repeat
 paid calls, delete fixtures, reopen issues, clean artifacts/worktrees, or close the real delivery
 issue as implicit cleanup. Preserve evidence and report the next owner decision instead.
+
+For maintenance, scratch receipts and ignored `track` records, also execute the actual two-client
+matrix in [Task artifact lifecycle](task-artifact-lifecycle.md). Issue consent never authorizes cleanup.

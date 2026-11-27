@@ -29,6 +29,16 @@ Record extra fields: repository_root, github_repo, branch, checked_at, actor_sou
 Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
 This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Resolve the selected task root; read discovery, plan and their saved producer refs.

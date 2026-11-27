@@ -26,6 +26,15 @@ Missing/partial/mismatched pairs or competing passes BLOCK; never manufacture re
 Only ursa-discover writes discovery.md, issue_url and its ref. Neither skill below edits task records.
 These are agent procedures, not transactional enforcement or identity attestation.
 
+## Retained task evidence
+
+Read selected task maintenance/ref when present and validate identity/revision/blob. Archived evidence
+may be inspected without resume; do not exclude it from exact issue evidence lookup or rewrite it.
+PARTIAL/BLOCK/broken maintenance pair blocks task-based write readiness, not a fallback to no evidence.
+Absent scratch is expected only with original valid implement entry, matching complete maintenance
+receipt for exact path/blob/task/root/repo and actual absence; PARTIAL/wrong receipt or missing durable
+pair is a gap. Reappearing/changed file is protected drift. No archival or issue effect is implied.
+
 ## Resolve task evidence
 
 1. Resolve the exact issue URL/number from the user's selected issue in the verified repository;

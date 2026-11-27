@@ -29,6 +29,16 @@ Record extra fields: repository_root, github_repo, branch, checked_at, actor_sou
 Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
 This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
+## Task maintenance guard
+
+Explicitly read selected task maintenance.md/ref if either exists; validate pair, identity/revision/blob.
+Absent pair means legacy ACTIVE. ARCHIVED is inspectable history, excluded from execution/new rounds;
+route explicit resume to ursa-maintain. PARTIAL/BLOCK/incomplete pair stops writes/automatic selection,
+not silent fallback; only maintenance producer reconciles it. Preserve old producer bytes/refs.
+Expected absent scratch requires original implement entry + matching completed deletion result in a
+valid maintenance pair for exact path/blob/task/root/repo and actual absence. PARTIAL alone, wrong
+receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approval is revived by resume.
+
 ## Steps
 
 1. Read bound discovery, plan, governing plan audit and implementation with their saved refs.
@@ -39,7 +49,11 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
 4. Choose the next unused positive code-audit round and reserve `code-audit-<round>.md`. Earlier audit
    files remain immutable; later complete REVISE/BLOCK overrides PASS; never claim the older PASS governs.
 5. Re-read repository instructions and resolve the recorded base commit. Inspect current `git status`
-   plus the complete diff from that base; never review only a selected patch supplied in prose.
+   plus the complete diff from that base. Explicitly enumerate the selected task root, including
+   ignored/hidden entries; compare paths/kinds/blobs/bindings with implementation inventory. List
+   durable/provenance-only/local/unknown records and exact reviewed paths/versions admitted for track.
+   Verify scratch receipts and whether raw payloads remain required. Never review only a prose patch;
+   audit-owned outputs keep their producer/ref bindings without a self-hashing inventory loop.
 6. Compare every changed path and behavior with plan scope, decisions, sequencing, and exclusions.
    Classify missing, extra, generated, and pre-existing paths explicitly.
 7. Read the changed files in context. Check correctness, failure handling, maintainability, dependency
