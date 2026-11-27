@@ -47,7 +47,7 @@ flowchart LR
   CA --> H[Handoff: human decision]
 ```
 
-The six skills are short workflow instructions, not a second application you must learn. The installer
+The eight skills are short workflow instructions, not a second application you must learn. The installer
 and its tests are real scripts in this repository; the skills tell the agents when to use them and when
 to stop. Installation does not change your project code, Git configuration, existing `AGENTS.md` or
 `CLAUDE.md`, or global agent settings.
@@ -81,7 +81,7 @@ repository's VS Code terminal, run:
 "$HOME/.local/share/ursa/install.sh"
 ```
 
-The installer copies the six workflow skill files into your selected project and creates local Claude
+The installer copies the eight workflow skill files into your selected project and creates local Claude
 Code links to the same files. It records where they came from and checks the result.
 
 To confirm the installation later without changing anything, run this from your project repository:
@@ -106,6 +106,23 @@ and pull requests; a network restriction does not mean your GitHub login is brok
 For installation details, validation, updates, and removal, see
 [Installation](docs/installation.md).
 
+## Optional GitHub issues
+
+Use `ursa-create-issue` after choosing a task, or start with an ordinary request. The agent checks
+existing issues and shows the exact repository, title and body before asking to create anything.
+You can reuse an existing issue or decline. Issues are optional for the six-stage coding workflow.
+
+Only discovery saves an optional issue association. Adding one after planning invalidates dependent
+plans/audits and requires fresh review; the agent explains that cost first. You can instead select
+relevant task evidence when closing, without changing its saved association.
+
+After delivery, use `ursa-close-issue`. It checks each acceptance criterion and the delivered change.
+Local tests or a merge alone do not establish completion. Closure and one optional progress comment
+need separate previews and approvals. Handoff uses `Refs <issue URL>` by default so merging does not
+silently close the issue. Neither discovery nor an audit writes to GitHub issues.
+
+For maintainer validation, see [Issue lifecycle verification](docs/issue-lifecycle-verification.md).
+
 ## What you need
 
 - Git.
@@ -121,7 +138,7 @@ verified.
 ## Repository layout
 
 ```text
-.agents/skills/     Canonical source for the six workflow skills
+.agents/skills/     Canonical source for the eight workflow skills
 .github/            Issue and pull-request intake templates
 CONTRIBUTING.md     Contribution guidance
 docs/               Beginner and technical installation guides

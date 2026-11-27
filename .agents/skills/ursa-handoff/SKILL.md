@@ -48,21 +48,30 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
 6. Record reviewed paths, checks, remaining risks, recovery, and the proposed next mutation. Hash the
    saved handoff, then recheck that saving it respected the chosen disposition and audit inventory.
 7. At the commit boundary, accept exactly one decision: `authorized`, `declined`, or
-   `not-yet-authorized`. The latter two perform no commit; an unresolved decision leaves status pending.
-8. On authorized commit, stage only the reviewed inventory permitted by disposition, inspect the staged
+   `not-yet-authorized`. The latter two perform no commit and set handoff status `BLOCK`.
+8. Default to non-closing commit messages and `Refs <canonical issue URL>` PR references. Inspect
+   proposed commit messages, PR title/body and commits destined for the default branch for closing
+   keywords. An existing closing reference must be exposed, never silently rewritten. Require an
+   explicit operator choice for that exact auto-close effect, previewing its bypass of the later
+   close-skill decision; otherwise stop until a non-closing form is chosen. Delivery/merge consent
+   alone never authorizes auto-close. On authorized commit, stage only the reviewed inventory
+   permitted by disposition, inspect the staged
    diff, create one repository-conforming commit, and record its exact SHA and resulting Git state.
 9. Ask for a separate push decision bound to that commit SHA. Push only `authorized`; `declined` or
-   `not-yet-authorized` leaves the remote unchanged and ends truthfully.
+   `not-yet-authorized` leaves the remote unchanged, sets `BLOCK`, and ends truthfully.
 10. After an authorized push, ask separately whether to create a pull request for the pushed branch.
-    Confirm the base branch, issue reference, title, and factual test evidence before using `gh`.
+    Declined or not-yet-authorized means no PR and status `BLOCK`; record the last completed boundary.
+    Confirm the base branch, non-closing issue reference (or its separately elected auto-close effect),
+    title and factual test evidence before using `gh`.
 11. Read the created pull request back and record its URL, base, head, state, and linked issue. A failed
     or mismatched readback returns `BLOCK`; never claim a proposed command as delivery evidence.
 12. Always stop before merge; PR/review/merge need separate authority, never inferred from earlier steps.
 
 ## Output
 
-- `READY`: current reviewed evidence plus the exact completed mutation, SHA or PR URL, Git state,
-  remaining risks, and the next decision for the operator.
+- `READY`: a verified PR exists and every required delivery boundary through PR creation is complete;
+  include current reviewed evidence, completed mutations/SHAs, PR URL, Git state and remaining risks.
+  A prepared preview or a completed commit/push with a later boundary pending is never READY.
 - `BLOCK`: stale audit, diff drift, pending disposition, declined or missing authority, failed action,
   or mismatched readback, with the unchanged boundary stated. Recipient: operator.
 
@@ -76,5 +85,8 @@ This is a procedural contract, not identity attestation, tamper proof, locking o
 ## Next stage
 
 After a verified PR exists, give the operator its URL, exact head SHA, checks, risks, and required review
-gate. If no PR exists, report the last completed boundary and preserved state. Never merge; a later
+gate. Suggest ursa-close-issue only after independently verified delivery; it checks every criterion
+and needs separate write approval. A PR alone is not delivery, and a merge alone is not acceptance.
+Never close or comment on an issue implicitly. If no PR exists, report the last completed boundary
+and preserved state. Never merge; a later
 review and explicit merge decision own that action.
