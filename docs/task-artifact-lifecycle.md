@@ -91,7 +91,8 @@ alongside normal Git diffs/status. Inventories record paths/kinds/blobs/bindings
 the independent audit admits exact paths and versions for `track`. Ordinary status is insufficient.
 
 Handoff re-enumerates and compares exact bytes before any approved commit. Force-add is restricted to
-individually previewed unchanged reviewed paths, under both track and commit decisions. New or changed
+individually previewed unchanged reviewed paths, under explicit track intent and the carried handoff delivery grant. No
+second commit consent is needed for the same scope. Default new records to local; new or changed
 handoff/maintenance outputs stay explicitly local or need review before tracking. Compare the staged
 path/blob list to the approved list; never force-add a directory. Report both tracked and local lists.
 

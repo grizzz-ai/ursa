@@ -60,7 +60,9 @@ not a durable task handoff. Once you choose a task, later stages resolve its sav
 
 The nine-skill package includes two optional GitHub issue skills and task maintenance alongside the six coding stages.
 Creation accepts ordinary text without a saved task; closure needs acceptance and delivered evidence.
-Each GitHub write is previewed and separately authorized. Only discovery writes a task's issue_url;
+Issue creation, comments and closure keep their own preview/approval. One explicit handoff request
+covers commit, push, PR, checks and normal merge for that reviewed task; it does not authorize issue
+writes, deployment or cleanup. Only discovery writes a task's issue_url;
 association after planning requires fresh planning/audits, and is never an automatic install effect.
 
 An older six- or eight-skill installation is not bulk-upgraded by rerunning the installer: occupied destinations

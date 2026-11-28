@@ -1,12 +1,13 @@
 ---
 name: ursa-handoff
-description: Preserve reviewed evidence and execute only separately authorized delivery actions.
+description: Deliver one reviewed task through commit, pull request, checks and normal merge under one scoped user request.
 ---
 
 ## Purpose
 
-Turn a current code-audit PASS into a reviewable operator handoff while keeping artifact disposition,
-commit, push, and pull-request decisions explicit. This stage always stops before merge.
+Deliver a current independently reviewed task through commit, push, PR, checks and normal merge after
+one user handoff/delivery request. Report the verified result or the exact limit/blocker; do not ask
+again for unchanged delivery consent. Review PASS alone never authorizes delivery.
 
 ## Managed inputs
 
@@ -29,8 +30,33 @@ Record extra fields: repository_root, github_repo, branch, checked_at, actor_sou
 Save outputs before their refs; interruption/write failure prevents readiness; competing passes stop.
 This is a procedural contract, not identity attestation, tamper proof, locking or transactions.
 
-- An artifact disposition decision: `track`, `local`, or `pending`.
-- Separate operator decisions for commit, push, and pull-request creation as each boundary is reached.
+## Delivery authority
+
+Use a recorded grant only when a current user request in this session selects the task for handoff
+or continuation. A clear invocation for one selected task is that request; do not require a special
+phrase or another yes/no. Loading instructions, an explanation/preview, another stage or actor,
+scheduled wakeup, or a record alone never starts effects. Ask by description if task selection is ambiguous.
+Record the attributable user request/source, repository, task, plan revision/hash, target base branch
+and limits in handoff.md. A grant covers ordinary commit, push, PR creation/update, check/review observation and
+normal merge for that scope. Progress previews inform the user; they are not new consent gates.
+Later user limits always override the record: stop, preview-only, no-push, draft-only, open-only,
+no-merge and exact-head-only. Narrow immediately; widen only from explicit new user words, never
+from an older wider record. An exact-head-only limit expires on head change.
+Plan base for delivery authority means the target base branch, not its current commit SHA. An advanced
+base-branch commit alone does not end the grant; refresh readiness and affected review/check evidence
+under the existing gates. Historical producer/audit base hashes still require coherent validation.
+A current continuation under the same plan/repo/target base branch reuses the grant, including an
+implementation revision/fix with a fresh independent code audit. Refresh all applicable evidence at the actual head;
+do not re-ask delivery consent just because the implementation hash changed. A new plan revision,
+repository, target base branch or outside-scope effect ends the grant: ask once for the new scope. Missing,
+revoked, conflicting or legacy-unattributable authority stops effects. Never upgrade old READY to consent.
+Default new workflow evidence to local. Preserve explicit track/local/pending choices; pending is a
+real unresolved choice. Track requires explicit intent plus the independently admitted exact paths;
+the carried delivery grant covers their commit without another commit-approval question.
+Delivery does not authorize issue writes/auto-close, deploy/release/publication, paid runs, settings,
+protection/IAM changes, admin/force bypass, branch deletion or artifact maintenance. Ordinary expected
+CI/preview effects do not reset consent; a known new external effect beyond scope needs its own choice.
+Client sandbox/permission controls remain independent; never bypass them.
 
 ## Task maintenance guard
 
@@ -44,67 +70,88 @@ receipt, missing durable evidence or changed/reappeared bytes BLOCKS. No approva
 
 ## Steps
 
-1. Read discovery, plan, governing plan audit, implementation and code audit with saved refs.
-   Confirm all identity/revision/hash/base/inventory bindings; require COMPLETE implementation.
-2. Both governing audits must be latest complete PASS for their exact producer revision/hash.
-   A later REVISE/BLOCK, self-review, stale binding or missing proof returns BLOCK.
-3. Refresh repository instructions, branch, HEAD, status, and complete diff from the reviewed base.
-   Any byte or path drift since audit returns `BLOCK` and routes back to implementation review.
-4. Apply artifact disposition before delivery. `track` includes workflow artifacts in reviewed scope;
-   `local` keeps them outside the commit; `pending` records the unresolved owner and returns `BLOCK`.
-   Enumerate ignored/hidden task entries explicitly; compare each intended path/blob to the independent
-   audit's exact admitted track list. New/changed/unreviewed handoff or maintenance outputs stay
-   explicitly local or need independent review before tracking. Show retained-local and tracked lists.
-5. Create or revise `handoff.md` with fields: `task_key`, `artifact_root`, `actor_id`, `revision`,
-   `plan_revision`, `plan_hash`, `implementation_revision`, `implementation_hash`, `code_audit_round`,
-   `code_audit_hash`, `base_ref`, `disposition`, and `status`.
-6. Record reviewed paths, checks, remaining risks, recovery, and the proposed next mutation. Hash the
-   saved handoff, then recheck that saving it respected the chosen disposition and audit inventory.
-7. At the commit boundary, accept exactly one decision: `authorized`, `declined`, or
-   `not-yet-authorized`. The latter two perform no commit and set handoff status `BLOCK`.
-8. Default to non-closing commit messages and `Refs <canonical issue URL>` PR references. Inspect
-   proposed commit messages, PR title/body and commits destined for the default branch for closing
-   keywords. An existing closing reference must be exposed, never silently rewritten. Require an
-   explicit operator choice for that exact auto-close effect, previewing its bypass of the later
-   close-skill decision; otherwise stop until a non-closing form is chosen. Delivery/merge consent
-   alone never authorizes auto-close. On authorized commit, stage only the reviewed inventory
-   permitted by disposition. For ignored records, preview and deliberately force-add only exact
-   unchanged independently admitted paths under the track AND commit approvals, never a directory
-   sweep. Recheck staged path/blob set against that list and initial index; inspect the staged diff,
-   create one repository-conforming commit, and record its exact SHA and resulting Git state.
-9. Ask for a separate push decision bound to that commit SHA. Push only `authorized`; `declined` or
-   `not-yet-authorized` leaves the remote unchanged, sets `BLOCK`, and ends truthfully.
-10. After an authorized push, ask separately whether to create a pull request for the pushed branch.
-    Declined or not-yet-authorized means no PR and status `BLOCK`; record the last completed boundary.
-    Confirm the base branch, non-closing issue reference (or its separately elected auto-close effect),
-    title and factual test evidence before using `gh`.
-11. Read the created pull request back and record its URL, base, head, state, and linked issue. A failed
-    or mismatched readback returns `BLOCK`; never claim a proposed command as delivery evidence.
-12. Always stop before merge; PR/review/merge need separate authority, never inferred from earlier steps.
+1. Read discovery, plan, governing plan audit, COMPLETE implementation and code audit with saved refs.
+   Validate task/root/repo/plan/base/revision/hash bindings. Both latest complete audits for the exact
+   producer bytes must be PASS from distinct actors; later REVISE/BLOCK or self-review stops delivery.
+2. Resolve the current request and any carried grant under Delivery authority. Apply the latest user
+   limits before effects. Record missing decisions or narrowed endpoints, not repeated approval forms.
+3. Refresh instructions, branch, HEAD, status and full diff from the reviewed base. Distinguish recorded
+   expected delivery changes (the exact reviewed commit/PR) from unexplained product/path drift.
+   Product fixes return to implement/review; only reviewed in-scope work may resume under the same grant.
+4. Apply disposition. Enumerate ignored/hidden task entries and initial index; compare intended tracked
+   paths/blobs with the independent audit's admitted list. Default-local includes new handoff/maintenance
+   outputs; unreviewed entries never get swept in. Show tracked and retained-local lists. Preserve
+   explicit pending instead of guessing. No broad add/force-add or directory staging.
+5. Save handoff.md/ref with existing plan/implementation/code-audit/base/disposition bindings plus
+   request/source, grant scope/status, active limits, checked head, completed effects, last verified
+   boundary, remaining gate and eventual PR/merge identity. Use a new revision, not another grant file.
+   Before each effect record intended action as in_progress, not completed; after readback record
+   only actual effects and verify the saved file/ref. These are procedural receipts, not atomic locks.
+6. Default to non-closing commit/PR Refs links. Inspect all commits and PR text for closing keywords;
+   expose an existing auto-close effect and require its separate explicit choice, or stop for a
+   non-closing form. Delivery consent never includes closure. Under track intent and the carried
+   grant, deliberately force-add only exact unchanged independently admitted records. Compare staged
+   NUL path/blob lists to the admitted set and initial index, inspect staged diff, create one normal
+   repository-conforming commit and record SHA. Preview-only permits no commit, push, PR or merge;
+   only this handoff's own record/ref may be saved unless the user also prohibited local writes.
+   No-push permits the reviewed local commit but stops before push.
+7. Push the reviewed commit normally to the selected branch, without another consent question. Never
+   force-push. Create/update one matching PR with the verified base, non-closing reference, title and
+   factual checks/risks; re-use a matching existing PR rather than duplicate it. Read URL/repo/base/head,
+   state and linked issue back. Open-only/no-merge/draft-only stop at their requested endpoint.
+8. Read current PR/head, check runs/statuses, reviews/blocking discussion and effective branch
+   requirements. Missing/inaccessible data is unknown, not no requirements; no displayed checks alone
+   does not establish that none are required. Use supported repository-scoped gh/API reads, validating
+   stdout separately from diagnostic stderr. A real read failure stops; preserve its cause.
+   Failed checks, requested changes, missing required reviews, conflicts or stale evidence block merge.
+   Never self-approve a PR, re-run checks, relax protection or reinterpret an old PASS to bypass a gate.
+9. Observe ordinary pending checks for at most10 minutes and6 state snapshots from the start of
+   this invocation's observation, after any push/PR update in this invocation. A current continuation
+   starts its own observation window, not a timer tied to the original PR creation. Use spaced waits
+   or supported event notifications, then one final exact-head readiness read before merge. Do not
+   reset the window on head changes within this invocation. If still pending, return BLOCK: pending checks, no outside action needed; reinvoke to continue. Preserve the
+   grant; a current same-task continuation resumes observation without new consent. A required human
+   review or failed check is a distinct blocker naming the real outside action, not merely pending.
+10. When ready and within limits, merge normally with the user's method; otherwise use the sole
+    enabled repository method; if several are allowed use merge commit to preserve the reviewed SHA.
+    If merge commit is disabled and multiple others remain, report the method choice rather than guess.
+    Bind the mutation to the reviewed head, e.g. gh pr merge with the selected explicit method and
+    --match-head-commit <reviewed-head>. No --admin/force, protection bypass or --delete-branch.
+    Queued auto-merge is not MERGED. Re-read actual merged state/time/commit and delivered changes;
+    after squash/rebase verify equivalent reviewed changes, not equality of the rewritten commit SHA.
+11. After failed/ambiguous commit/push/PR/merge or readback, stop mutations and reconcile read-only
+    against local/remote identity, exact heads, matching PRs and merge state. Never retry UNKNOWN
+    blindly or compensate by delete/reopen/force. If still unknown, BLOCK with observed effects and
+    the exact reconciliation gap. A proven-absent failed write needs a separately recorded bounded
+    retry decision; old delivery consent does not grant unbounded retries.
+12. Save/verify the final handoff/ref and report the result below. Retain the original grant and latest
+    limits with evidence, not an assertion that future work is approved. No issue comments/closure,
+    deploy or maintenance action follows implicitly.
 
 ## Output
 
-- `READY`: a verified PR exists and every required delivery boundary through PR creation is complete;
-  include current reviewed evidence, completed mutations/SHAs, PR URL, Git state and remaining risks.
-  A prepared preview or a completed commit/push with a later boundary pending is never READY.
-- `BLOCK`: stale audit, diff drift, pending disposition, declined or missing authority, failed action,
-  or mismatched readback, with the unchanged boundary stated. Recipient: operator.
+- MERGED: operator receives verified PR URL, reviewed head, merge SHA/time, delivered changes,
+  checks/independent review, tracked/local lists and remaining risks. A merge alone is not acceptance.
+- LIMIT_REACHED: operator receives the requested preview/local/PR endpoint, actual completed effects
+  and unexecuted remainder. This is not a failed check or full delivery; state the active limit.
+- BLOCK: operator receives the last verified effect, unknown/missing proof or blocker and next action.
+  Distinguish still-pending/no-outside-action from a real external dependency. Preserve the grant for
+  an eligible current continuation, never claim a proposal, queued merge or uncertain write succeeded.
+Legacy READY is historical PR evidence only; it never means merged or supplies a missing user grant.
 
 ## Stop conditions
 
-- Artifact identity, hashes, latest audit verdict, base, branch, inventory, or repository bytes drift.
-- Disposition is `pending`, or an action lacks its own explicit operator decision.
-- Staging would include unreviewed files, push would target another SHA, or PR metadata is ambiguous.
-- Any request would merge, deploy, publish, alter visibility, or infer authority from an earlier step.
+- Invalid identity/producer/ref/audit binding, missing scope, unexplained drift or competing pass.
+- Current user limit prohibits the next effect; report LIMIT_REACHED when its endpoint is complete.
+- Unreviewed staging, an expired exact-head restriction, unknown policy/state or unresolved review/check.
+- New plan/repo/target base branch/effect, revoked authority, ambiguous metadata or uncertain mutation outcome.
+- Action would close/comment on an issue, deploy/publish, change settings/protection, spend, delete a
+  branch or maintain artifacts without its separate authority. Never bypass a client permission gate.
 
 ## Next stage
 
-After a verified PR exists, give the operator its URL, exact head SHA, checks, risks, and required review
-gate. Suggest ursa-close-issue only after independently verified delivery; it checks every criterion
-and needs separate write approval. A PR alone is not delivery, and a merge alone is not acceptance.
-Never close or comment on an issue implicitly. If no PR exists, report the last completed boundary
-and preserved state. Never merge; a later
-review and explicit merge decision own that action.
-
-After independently verified completion, offer ursa-maintain inventory; never run ignore/archive/cleanup
-automatically or infer their consent from disposition, delivery or issue closure.
+Return verified delivery evidence to the operator. Suggest ursa-close-issue only for a separately
+requested acceptance/closure assessment; it independently checks every criterion and needs its own
+write approval. A PR alone is not delivery, and a merge alone is not acceptance. After verified
+completion offer ursa-maintain inventory; never run ignore/archive/cleanup automatically. For a
+blocked fix return to implementation and distinct review, carrying only still-valid scoped authority.
