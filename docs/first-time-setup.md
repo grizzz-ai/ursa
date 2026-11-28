@@ -81,8 +81,10 @@ other to review the plan and the finished change. That gives you another point o
 have time or experience to check every technical detail yourself.
 
 You can start with one agent if that is all you have. For independent review, the reviewer must be a
-separate agent and session from the author. Two agents do not remove your final decision: you still
-decide whether to commit, push, or merge.
+separate agent and session from the author. You decide when to deliver: ask for handoff once, and the
+agent handles commit, push, pull request, checks and normal merge. Say preview-only, open-only or
+no-merge when you want a narrower endpoint. Real blockers stop progress; unchanged steps do not
+need another yes. Deployment, issue closure and cleanup remain separate choices.
 
 ### Install Claude Code
 
@@ -174,7 +176,7 @@ When you are ready to make a change, use the skills in order:
 | `ursa-plan-audit` | Have a distinct reviewer challenge the plan. |
 | `ursa-implement` | Make the approved change. |
 | `ursa-code-audit` | Have a distinct reviewer check the completed diff. |
-| `ursa-handoff` | Record evidence and leave the next decision to a human. |
+| `ursa-handoff` | Deliver the reviewed task after one request, respecting your limits and required checks. |
 
 ## Optional: create and close a GitHub issue
 

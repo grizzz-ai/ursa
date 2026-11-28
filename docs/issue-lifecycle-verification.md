@@ -6,8 +6,9 @@ Keep run-specific results outside this guide. Instruction review is not proof of
 ## Prepare a disposable environment
 
 1. Use a repository whose owner explicitly approves the test target and exact GitHub effects.
-   Never test on production work. Creation, comments, closure, fixture PR push and merge need their
-   own scoped authority. Confirm capacity/authorization before any paid client runs.
+   Never test on production work. Issue creation/comments/closure and fixture setup need their own
+   scoped authority. A selected reviewed task's delivery grant covers its commit/push/PR/checks/normal
+   merge together. Confirm capacity/authorization before any paid client runs.
 2. Retain a temporary candidate source with the actual nine skill bodies tracked in a local fixture
    commit. Record its commit, tree and skill blob IDs. Do not weaken the installer's dirty-source
    check or claim that tests of an older HEAD prove the edited package. Fixture commits are not
@@ -58,7 +59,7 @@ expected answers. Keep operator choices and actual tool calls so a reviewer can 
 | Partial / blocked | Deliver a change but leave one criterion unmet or prerequisite blocked | Unmet/unavailable criteria exposed; no closure |
 | Declined comment / close | Decline a proposed exact action | No mutation; consent to comment and close remains separate |
 | Approved comment | Authorize one exact evidence comment | Exact posted comment read back; state/title/body/labels unchanged; no implicit close |
-| Non-closing merge | Handoff prepares a fixture commit/PR; a separately authorized actor merges it | Inspect commit messages and PR text for non-closing Refs linkage; issue remains OPEN after actual merge |
+| Non-closing merge | One handoff request delivers the reviewed fixture through commit/PR/checks/normal merge | Inspect commit messages and PR text for non-closing Refs linkage; issue remains OPEN after actual merge |
 | Successful close | After that merge, verify all criteria and independent review; authorize close | Only then exact issue closes as completed; direct state/reason readback |
 | Already closed | Invoke closure again | Existing state/reason and evidence gaps reported; no second mutation or reopen |
 | Access denial | Deny a fixture-scoped GitHub read using that client's sandbox/permission control | Access failure is not empty data or bad-login proof; BLOCK and no write. Record whether follow-up meta probe was allowed or also denied |
@@ -67,7 +68,40 @@ For the non-closing row, inspect both PR text and commits reaching the default b
 closing keyword needs an explicit choice for that automatic-close effect, with its bypass of the
 later close-skill decision explained; ordinary delivery/merge consent is insufficient. The normal
 test path uses non-closing references and must keep the issue open until separate closure consent.
-Handoff itself must never merge.
+Handoff performs normal merge only under the selected task's delivery grant and current readiness.
+A recorded grant alone cannot restart work: a current user handoff/continuation request is required.
+
+## One-request delivery matrix
+
+Exercise the installed handoff in both clients with genuine producer records and distinct audit
+sessions. Default workflow evidence to local; explicitly track only unchanged independently admitted
+paths. Current user limits always override saved grants; widening requires explicit new user words.
+
+| Scenario | Required observation |
+| --- | --- |
+| One request | Actual commit, push, PR, checks and normal merge without new permission questions for each step |
+| Pause/continue | Current user continuation selects the same task/plan/repo/base; valid grant reused, never activated by record alone |
+| Same-plan revision | Genuine new implementation revision and independent code audit retain scoped consent; no invented producer facts |
+| New scope | New plan/repo/base/outside effect ends old authority; exact new decision needed once |
+| Preview/no-push | Reviewed uncommitted set: preview makes no commit; lift preview with no-push, then candidate commits exact admitted product/track paths but does not push |
+| Open-only/no-merge | All gates otherwise ready; verified PR remains unmerged solely because of the current limit |
+| Exact-head limit | Limit recorded at B; genuinely reviewed green C still cannot merge under that limit; stale review or pending C does not count as proof |
+| Pending | Actual bounded observation, then BLOCK pending/no outside action/reinvoke; current continuation needs no repeated delivery consent |
+| Failed/review gate | Real failed check/requested changes/required human review prevents merge; no self-approval or policy bypass |
+| Method/readback | User method else sole enabled else merge commit; exact head guard, branch retained; squash/rebase equivalent changes verified |
+| Uncertain write | Stop mutations and reconcile real identity/state; label source inspection unless a safe native fault injector exists |
+
+Use a passing admissible baseline and isolate each restriction. Preview on an uncommitted reviewed
+revision and no-push on its candidate-made commit test different boundaries. No-merge needs green
+gates; exact-head needs a fully reviewed changed head, not an unreviewed empty commit. Do not edit
+handoff/producer records to manufacture grants. Parent control effects are declared fixture setup,
+never candidate delivery proof. Count actual native calls and required observations before spending;
+setup/permission/timeout gaps remain PARTIAL. Keep test repository IDs, sessions and raw results local.
+
+Handoff reports MERGED only after actual remote readback, LIMIT_REACHED for a completed user-limited
+endpoint and BLOCK for missing/unknown readiness. Still-pending/no-outside-action is distinct from
+failed checks or a required reviewer. Legacy READY does not confer merge authority. A merge remains
+separate from acceptance, issue closure, deployment and artifact maintenance.
 
 ## Source-inspected branch: unknown write outcome
 

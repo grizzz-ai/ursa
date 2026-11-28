@@ -32,7 +32,9 @@ Orientation is saved in `.ai-workflow/_project/overview.md`; task evidence lives
 A no-write request leaves an unsaved overview and no durable handoff; project files remain unchanged.
 These are agent instructions, not tamper-proof records, identity attestation or executable enforcement.
 
-Commit, push, pull-request creation, merge, deployment and publication remain separate operator decisions.
+One explicit handoff request covers reviewed commit, push, PR, checks and normal merge for that task.
+Current user limits win; continuation reuses valid scoped consent. Issue writes, deployment/publication
+and artifact maintenance retain separate authority. See ursa-handoff for gates and truthful outcomes.
 
 Issues are optional: ursa-create-issue accepts an ordinary request and previews each GitHub write.
 Only ursa-discover persists optional issue_url associations in task evidence. Associating after

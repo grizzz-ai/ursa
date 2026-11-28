@@ -21,8 +21,10 @@ different session or actor from the author; merely changing a model name does no
 independent.
 
 The workflow keeps this collaboration short and visible: understand the project, agree on a plan,
-make the change, check it, then leave the human with the decision. It never commits, pushes, opens a
-pull request, merges, deploys, or publishes on its own. You keep those decisions.
+make the change and check it independently. When you ask for handoff once, the agent delivers that
+reviewed task through commit, push, pull request, checks and normal merge. It keeps your limits and
+stops at real blockers; you do not need to approve each unchanged step again. Deployment, publication,
+issue closure and artifact cleanup remain separate choices.
 
 ## How it works
 
@@ -36,7 +38,7 @@ guide. The agents use the remaining steps when the task needs them.
 | 3 | `ursa-plan-audit` | The second agent looks for missing steps, risks, and bad assumptions. |
 | 4 | `ursa-implement` | The first agent makes only the approved change. |
 | 5 | `ursa-code-audit` | The second agent checks the actual diff against the plan. |
-| 6 | `ursa-handoff` | You receive the evidence and decide whether anything is committed or merged. |
+| 6 | `ursa-handoff` | Ask once to deliver the reviewed task; receive the merge result or a concrete blocker. |
 
 ```mermaid
 flowchart LR
@@ -44,7 +46,8 @@ flowchart LR
   P --> PA[Plan audit: distinct reviewer]
   PA --> I[Implement]
   I --> CA[Code audit: distinct reviewer]
-  CA --> H[Handoff: human decision]
+  CA --> H[Handoff: one delivery request]
+  H --> M[Checks and normal merge]
 ```
 
 The nine skills are short workflow instructions, not a second application you must learn. The installer
@@ -161,7 +164,9 @@ tests/              Installer integration checks
 ## Limits
 
 - Independent review depends on distinct people or actors; two AI clients alone do not supply it.
-- Commit, push, pull-request creation, merge, deployment, and publication require separate decisions.
+- A handoff request covers one reviewed task through normal merge; preview/open-only/no-merge limits win.
+- Reviews and required checks remain mandatory. Issue closure, deploy/publication and cleanup are separate.
+- A current continuation reuses scoped consent; a saved record alone never starts delivery.
 
 ## Support
 
